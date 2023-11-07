@@ -34,7 +34,7 @@ void setup() {
 void loop(){
  int valLeft = digitalRead(leftlinesensorPin); // read left input value
  int valRight = digitalRead(rightlinesensorPin); // read right input value
- int valFront = digitalRead(frontLeftPin); // read left input value
+ int valFrontLeft = digitalRead(frontLeftPin); // read left input value
  int valFrontRight = digitalRead(frontRightPin); // read right input value
   //Serial.println("Front: " << valFrontLeft << "  Back: " << valFrontRight << "  Right: " << valRight << "  Left: " << valLeft);
   int stop = 0;
@@ -53,15 +53,15 @@ void loop(){
   
   else if (!valFrontLeft&& valFrontRight){
     leftMotor->run(FORWARD);
-    leftMotor->run(100);
+    leftMotor->setSpeed(100);
     rightMotor->run(BACKWARD);
-    rightMotor->(100);
+    rightMotor->setSpeed(100);
   }  
   else if (valFrontLeft&& !valFrontRight){
     leftMotor->run(BACKWARD);
-    leftMotor->run(100);
+    leftMotor->setSpeed(100);
     rightMotor->run(FORWARD);
-    rightMotor->(100);
+    rightMotor->setSpeed(100);
   }
 
 
