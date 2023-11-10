@@ -1,0 +1,25 @@
+import serial
+import time
+import datetime
+
+def main():
+    port = 'COM6'
+    baudrate = 9600 
+    ser = serial.Serial(port, baudrate)
+
+    while(True):
+        with open('data.txt', 'a') as dataFile :
+            x = ser.readline()
+            data = x.decode('utf')
+            data = data.rstrip().split()
+            data = ' '.join(data)
+            dataFile.writelines(data)
+            dataFile.writelines('\n')
+            print(data)
+        
+        time.sleep(0.1)
+
+
+if __name__ == '__main__':
+    main()
+        
