@@ -53,6 +53,11 @@ void setup() {
   leftMotor->run(RELEASE);
   rightMotor->run(RELEASE);
 }
+
+void loop()
+{
+  go_to_box(0);
+}
 void go_to_box(int magnetic)
 {
  int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -62,31 +67,7 @@ void go_to_box(int magnetic)
   //Serial.println("Front: " << valFrontLeft << "  Back: " << valFrontRight << "  Right: " << valRight << "  Left: " << valLeft);
   // Start by continuing along the line
 
-  if (valFrontLeft && valFrontRight && !valRight && !valLeft)
-  {
-    // On a line, going straight. All good
-    //continue straight
-      leftMotor->setSpeed(255);
-  leftMotor->run(FORWARD);
-  rightMotor->setSpeed(255);
-  rightMotor->run(FORWARD);
-  Serial.println("straight");
-  }
-  
-  else if (!valFrontLeft  && valFrontRight && !valRight && !valLeft){
-    leftMotor->run(FORWARD);
-    leftMotor->setSpeed(255);
-    rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(255);
-    Serial.println("Correcting itself");
-  }  
-  else if (valFrontLeft && !valFrontRight && !valRight && !valLeft){
-    leftMotor->run(BACKWARD);
-    leftMotor->setSpeed(255);
-    rightMotor->run(FORWARD);
-    rightMotor->setSpeed(255);
-    Serial.println("Correcting itself");
-  }
+  StraightLine();
 
   // We now reach the intersection, we either go right or left:
 
@@ -125,32 +106,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
       valFrontLeft = digitalRead(frontLeftPin); // read left input value
       valFrontRight = digitalRead(frontRightPin);
 
-      if (valFrontLeft && valFrontRight && !valRight && !valLeft)
-      {
-        // On a line, going straight. All good
-        //continue straight
-          leftMotor->setSpeed(255);
-      leftMotor->run(FORWARD);
-      rightMotor->setSpeed(255);
-      rightMotor->run(FORWARD);
-      Serial.println("straight");
-      }
-      
-      else if (!valFrontLeft  && valFrontRight && !valRight && !valLeft){
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(255);
-        rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(255);
-        Serial.println("Correcting itself");
-      }  
-      else if (valFrontLeft && !valFrontRight && !valRight && !valLeft){
-        leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(255);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(255);
-        Serial.println("Correcting itself");
-      }
-
+      StraightLine();
       
       if(!valFrontLeft && !valFrontRight)
       {
@@ -222,32 +178,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
       valFrontLeft = digitalRead(frontLeftPin); // read left input value
       valFrontRight = digitalRead(frontRightPin);
 
-      if (valFrontLeft && valFrontRight && !valRight && !valLeft)
-      {
-        // On a line, going straight. All good
-        //continue straight
-          leftMotor->setSpeed(255);
-      leftMotor->run(FORWARD);
-      rightMotor->setSpeed(255);
-      rightMotor->run(FORWARD);
-      Serial.println("straight");
-      }
-      
-      else if (!valFrontLeft  && valFrontRight && !valRight && !valLeft){
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(255);
-        rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(255);
-        Serial.println("Correcting itself");
-      }  
-      else if (valFrontLeft && !valFrontRight && !valRight && !valLeft){
-        leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(255);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(255);
-        Serial.println("Correcting itself");
-      }
-
+      StraightLine();
       
       if(!valFrontLeft && !valFrontRight)
       {
@@ -300,4 +231,36 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
 
   // }
   delay(100);
+}
+
+void StraightLine(){
+
+  if (valFrontLeft && valFrontRight && !valRight && !valLeft)
+  {
+    // On a line, going straight. All good
+    //continue straight
+      leftMotor->setSpeed(255);
+  leftMotor->run(FORWARD);
+  rightMotor->setSpeed(255);
+  rightMotor->run(FORWARD);
+  Serial.println("straight");
+
+  }
+  
+  else if (!valFrontLeft  && valFrontRight && !valRight && !valLeft){
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(255);
+    rightMotor->run(BACKWARD);
+    rightMotor->setSpeed(255);
+    Serial.println("Correcting itself");
+  }  
+  else if (valFrontLeft && !valFrontRight && !valRight && !valLeft){
+    leftMotor->run(BACKWARD);
+    leftMotor->setSpeed(255);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(255);
+    Serial.println("Correcting itself");
+  }
+
+
 }
