@@ -60,7 +60,7 @@ void StraightLine(){
   {
     // On a line, going straight. All good
     //continue straight
-      leftMotor->setSpeed(255);
+  leftMotor->setSpeed(255);
   leftMotor->run(FORWARD);
   rightMotor->setSpeed(255);
   rightMotor->run(FORWARD);
@@ -83,6 +83,63 @@ void StraightLine(){
     Serial.println("Correcting itself");
   }
 
+
+}
+
+void read(bool read_array[])
+{
+    //
+    read_array[2] = digitalRead(leftlinesensorPin); // read left input value
+    read_array[3] = digitalRead(rightlinesensorPin); // read right input value
+    read_array[0] = digitalRead(frontLeftPin); // read left input value
+    read_array[1] = digitalRead(frontRightPin);
+    
+   //the sequence is read_array = {valFrontLeft, valFrontRight, valLeft, valRight};  
+    
+
+}
+
+void function(bool array_start[4], bool array_stop[4], bool direction)
+{
+
+    // direction is true if clockwise else anticlockwise
+    //the sequence is read_array = {valFrontLeft, valFrontRight, valLeft, valRight}; 
+  bool read_array = {0,0,0,0};
+  read(read_array);
+
+  if ( read_array[0] == array_start[0] && read_array[1] == array_start[1] && read_array[2] == array_start[2] && read_array[3] == array_start[3])
+  {
+    while(true)
+    {
+        if(direction)
+        {
+          leftMotor->run(FORWARD);
+          leftMotor->setSpeed(255);
+          rightMotor->run(BACKWARD);
+          rightMotor->setSpeed(255);
+          Serial.println("turning");
+        }
+        else
+        {
+          leftMotor->run(BACKWARD);
+          leftMotor->setSpeed(255);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(255);
+          Serial.println("turning");
+        }
+        // add a delay if required 
+        delay(10);
+        read(read_array);
+
+        if(read_array[0] == array_stop[0] && read_array[1] == array_stop[1] && read_array[2] == array_stop[2] && read_array[3] == array_stop[3])
+        {
+          Serial.println("break");
+          break;
+        }
+
+    }
+
+  }
 
 }
 
@@ -170,77 +227,67 @@ int step = 0;
 int x = 0;
 int y = 0;
 int lidar;
+bool dir[4];
 
 while(True)
 {
-
-  if(int(step) == 0)
+  
+  read(dir);
+  if(step == 0  && dir[0] && dir[1] && dir[2] && dir [3])
   {
-    while(true)
-    {
-
-      valLeft = digitalRead(leftlinesensorPin); // read left input value
-      valRight = digitalRead(rightlinesensorPin); // read right input value
-      valFrontLeft = digitalRead(frontLeftPin); // read left input value
-      valFrontRight = digitalRead(frontRightPin);
-
-      leftMotor->run(FORWARD);
-      leftMotor->setSpeed(255);
-      rightMotor->run(BACKWARD);
-      rightMotor->setSpeed(255);
-      Serial.println("turning");
-
-        if(valFrontLeft && valFrontRight && valLeft && valRight)
-        {
-          Serial.println("break");
-          break;
-        }
-                
-    } 
-
-    step += 1;
+    bool start = {1,1,1,1};
+    bool stop = {1,1,1,1};
+    bool direction  = false;
+    function(start, stop, direction);
+    x = 0;
+    y = 0;
+    step = 1;
   }
+  else if (step == 1 && dir[0] && dir[1] && !dir[2] && dir[3] )
+  {
 
-    if (valFrontRight && valFrontLeft && valRight)
+    if (lidar)
     {
+      bool start = {1,1,0,1};
+      bool stop = {1,1,1,0};
+      bool direction = true;
+      function(start, stop, direction);
       x = -1;
+      y = 0;
+      step = 2;
     }
-
-    if ( valRight && valLeft && !valFrontLeft && !valFrontRight)
+    else
     {
-      while(true)
-      {
-
-        valLeft = digitalRead(leftlinesensorPin); // read left input value
-        valRight = digitalRead(rightlinesensorPin); // read right input value
-        valFrontLeft = digitalRead(frontLeftPin); // read left input value
-        valFrontRight = digitalRead(frontRightPin);
-
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(255);
-        rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(255);
-        Serial.println("turning");
-
-          if(valFrontLeft && valFrontRight && !valLeft && valRight)
-          {
-            Serial.println("break");
-            break;
-          }
-      }
-
-      x = -2; 
-          
-    } 
-
-
-
+      StraightLine();
+      x = -1;
+      y = 0;
     }
-    
+     
+  }
+  else if (step == 1 && !dir[0] && !dir[1] && !dir[2] && dir[3] )
+  {
 
-    else {
-      StraightLine()
+    if (lidar)
+    {
+      bool start = {1,1,0,1};
+      bool stop = {1,1,1,0};
+      bool direction = true;
+      function(start, stop, direction);
+      x = -1;
+      y = 0;
+      step = 2;
     }
+    else
+    {
+      StraightLine();
+      x = -1;
+      y = 0;
+    }
+     
+  }
+  else{
+    StraightLine();
+  }
 
 }
   
