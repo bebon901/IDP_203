@@ -1,7 +1,7 @@
 int green_ledPin = 13;
 int red_ledPin = 12;
 int magnetPin = 2; //change these 3 values according to connections
-bool block_is_magnetic = false; //variable can be used for determining
+bool is_block_magnetic = false; //variable can be used for determining
                                 //where to bring the block
 bool block_is_delivered = false; //this could be used differently,
                                  //only here for example code
@@ -23,7 +23,7 @@ void magnetic() { //detects magnetism and turns the red
   val = digitalRead(magnetPin);
   if (val == HIGH) {
   digitalWrite(red_ledPin, HIGH);
-  block_is_magnetic = true
+  is_block_magnetic = true;
 } else {
   digitalWrite(green_ledPin, HIGH);
 }
