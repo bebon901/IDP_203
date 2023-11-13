@@ -24,7 +24,7 @@ sensity_t = analogRead(sensityPin);
  // turn the ledPin on
 dist_t = sensity_t * MAX_RANG / ADC_SOLUTION;//
 //Serial.print(dist_t,0);
-return dist_t;
+return (dist_t * 10);
 //Serial.println("cm");dis
 
 }
