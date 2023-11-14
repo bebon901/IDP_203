@@ -56,7 +56,9 @@ void setup() {
 
 void StraightLine(){
 
-  if (valFrontLeft && valFrontRight && !valRight && !valLeft)
+  bool read_dir[4];
+  read(read_dir);
+  if (read_dir[0] && read_dir[1] && !read_dir[2] && !read_dir[3])
   {
     // On a line, going straight. All good
     //continue straight
@@ -68,14 +70,16 @@ void StraightLine(){
 
   }
   
-  else if (!valFrontLeft  && valFrontRight && !valRight && !valLeft){
+  else if (!read_dir[0]  && read_dir[1] && !read_dir[2] && !read_dir[3])
+  {
     leftMotor->run(FORWARD);
     leftMotor->setSpeed(255);
     rightMotor->run(BACKWARD);
     rightMotor->setSpeed(255);
     Serial.println("Correcting itself");
   }  
-  else if (valFrontLeft && !valFrontRight && !valRight && !valLeft){
+  else if (read_dir[0] && !read_dir[1] && !read_dir[2] && !read_dir[3])
+  {
     leftMotor->run(BACKWARD);
     leftMotor->setSpeed(255);
     rightMotor->run(FORWARD);
@@ -143,47 +147,17 @@ void function(bool array_start[4], bool array_stop[4], bool direction)
 
 }
 
+
+
 void loop()
 {
- int valLeft = digitalRead(leftlinesensorPin); // read left input value
- int valRight = digitalRead(rightlinesensorPin); // read right input value
- int valFrontLeft = digitalRead(frontLeftPin); // read left input value
- int valFrontRight = digitalRead(frontRightPin); // read right input value
-  //Serial.println("Front: " << valFrontLeft << "  Back: " << valFrontRight << "  Right: " << valRight << "  Left: " << valLeft);
+
   int stop = 0;
   int turning = 0;
   int intersection = 0;
   
-  // straiaht line code
 
-  
-// turning 
 
-if(!valFrontLeft && !valFrontRight && valRight)
-{
-  while(true)
-  {
-
-    valLeft = digitalRead(leftlinesensorPin); // read left input value
-    valRight = digitalRead(rightlinesensorPin); // read right input value
-    valFrontLeft = digitalRead(frontLeftPin); // read left input value
-    valFrontRight = digitalRead(frontRightPin);
-
-    leftMotor->run(FORWARD);
-    leftMotor->setSpeed(255);
-    rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(255);
-    Serial.println("turning");
-
-      if(valFrontLeft && valFrontRight)
-      {
-        Serial.println("break");
-        break;
-      }
-      
-  } 
-   
-}
 
 
   sensity_t = analogRead(sensityPin);
@@ -222,74 +196,85 @@ if(!valFrontLeft && !valFrontRight && valRight)
   // }
 
 
-  // hardcoding the path 
-int step = 0;
-int x = 0;
-int y = 0;
-int lidar;
-bool dir[4];
+    // hardcoding the path 
+  // int step = 0;
+  // int x = 0;
+  // int y = 0;
+  // int lidar = 0;
+  // int nRight = 0;
+  // bool dir[4];
 
-while(True)
-{
-  
-  read(dir);
-  if(step == 0  && dir[0] && dir[1] && dir[2] && dir [3])
-  {
-    bool start = {1,1,1,1};
-    bool stop = {1,1,1,1};
-    bool direction  = false;
-    function(start, stop, direction);
-    x = 0;
-    y = 0;
-    step = 1;
-  }
-  else if (step == 1 && dir[0] && dir[1] && !dir[2] && dir[3] )
-  {
+  // while(True)
+  // {
+    
+  //   read(dir);
+  //   if(step == 0  && dir[0] && dir[1] && dir[2] && dir [3]) // intersection 0 
+  //   {
+  //     bool start = {1,1,1,1};
+  //     bool stop = {1,1,1,1};
+  //     bool direction  = false;
+  //     function(start, stop, direction); 
+  //     step = 1; // after entering the loop step becomes 1
+  //   }
+  //   else if (step == 1 && !dir[0] && !dir[1] && dir[2] && dir[3] ) // intersection 2 and 7
+  //   {
 
-    if (lidar)
-    {
-      bool start = {1,1,0,1};
-      bool stop = {1,1,1,0};
-      bool direction = true;
-      function(start, stop, direction);
-      x = -1;
-      y = 0;
-      step = 2;
-    }
-    else
-    {
-      StraightLine();
-      x = -1;
-      y = 0;
-    }
-     
-  }
-  else if (step == 1 && !dir[0] && !dir[1] && !dir[2] && dir[3] )
-  {
+  //     if (lidar)
+  //     {
+  //       bool start = {0,0,1,1};
+  //       bool stop = {1,1,1,1};
+  //       direction = true;
+  //       function(start, stop, direction);     
+  //       step = 2;
+  //     }
+  //     else
+  //     { //right turn 
+  //       bool start = {0, 0, 1, 1};
+  //       bool stop = {1,1,0,1};
+  //       bool direction = true;
+  //       nRight += 1; 
+  //       function(start, stop, direction);
+  //     }
+      
+  //   }
+  //   else if (step == 1 && dir[0] && dir[1] && !dir[2] && dir[3]) // intersections 1, 3 , 4,5,6, 8, 9 
+  //   {
+  //     // number of right turns is odd i.e means it has just come from intersection 2 and 7 so we take a right turn otherwise not 
+      
+  //     if (lidar)
+  //     {
+  //       step = 2;
+  //       bool start = {1,1,0,1};
+  //       bool stop  = {1,1,1,0};
+  //       bool direction = true;
+  //       function(start,stop, direction); 
+  //     }
+  //     else
+  //     {       
+      
+  //       if (nRight % 2 == 1)
+  //       {
+  //         // we take a right turn
+  //         bool start = {1,1,0,1};
+  //         bool stop = {1,1,1,1};
+  //         bool direction = true;
+  //         nRight += 1;
+  //         function(start, stop, direction);
+  //       }
+  //       else
+  //       {
+  //         StraightLine();
+  //       }
+      
+  //     }
+      
+  //   }
+  //   else
+  //   {
+  //     StraightLine()
+  //   }
 
-    if (lidar)
-    {
-      bool start = {1,1,0,1};
-      bool stop = {1,1,1,0};
-      bool direction = true;
-      function(start, stop, direction);
-      x = -1;
-      y = 0;
-      step = 2;
-    }
-    else
-    {
-      StraightLine();
-      x = -1;
-      y = 0;
-    }
-     
-  }
-  else{
-    StraightLine();
-  }
-
-}
-  
+  // }
+    
   delay(100);
 }
