@@ -13,7 +13,7 @@ float dist_t, sensity_t;
 float distance_0 = 100;
 float distance_1 = 100;
 float distance_2 = 100;
-bool detected = false;
+int detected = false;
 float lidar = 100;
 
 
@@ -47,7 +47,7 @@ void setup() {
   }
   Serial.println("Motor Shield found.");
 
-  // Set the speed to start, from 0 (off) to 255 (max speed)
+  // Set the speed to start, from 0 (off) to 100 (max speed)
 
   // turn on motor
   leftMotor->run(RELEASE);
@@ -56,15 +56,15 @@ void setup() {
 
 void StraightLine(){
 
-  bool read_dir[4];
+  int read_dir[4];
   read(read_dir);
   if (read_dir[0] && read_dir[1] && !read_dir[2] && !read_dir[3])
   {
     // On a line, going straight. All good
     //continue straight
-  leftMotor->setSpeed(255);
+  leftMotor->setSpeed(100);
   leftMotor->run(FORWARD);
-  rightMotor->setSpeed(255);
+  rightMotor->setSpeed(100);
   rightMotor->run(FORWARD);
   Serial.println("straight");
 
@@ -73,24 +73,24 @@ void StraightLine(){
   else if (!read_dir[0]  && read_dir[1] && !read_dir[2] && !read_dir[3])
   {
     leftMotor->run(FORWARD);
-    leftMotor->setSpeed(255);
+    leftMotor->setSpeed(100);
     rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(255);
+    rightMotor->setSpeed(100);
     Serial.println("Correcting itself");
   }  
   else if (read_dir[0] && !read_dir[1] && !read_dir[2] && !read_dir[3])
   {
     leftMotor->run(BACKWARD);
-    leftMotor->setSpeed(255);
+    leftMotor->setSpeed(100);
     rightMotor->run(FORWARD);
-    rightMotor->setSpeed(255);
+    rightMotor->setSpeed(100);
     Serial.println("Correcting itself");
   }
 
 
 }
 
-void read(bool read_array[])
+void read(int read_array[])
 {
     //
     read_array[2] = digitalRead(leftlinesensorPin); // read left input value
@@ -103,46 +103,68 @@ void read(bool read_array[])
 
 }
 
-void function(bool array_start[4], bool array_stop[4], bool direction)
+void function(int array_start[4], int array_stop[4], int direction)
 {
 
     // direction is true if clockwise else anticlockwise
     //the sequence is read_array = {valFrontLeft, valFrontRight, valLeft, valRight}; 
-  bool read_array = {0,0,0,0};
+  int read_array[4] = {0,0,0,0};
   read(read_array);
+  Serial.print(read_array[0]);
+  Serial.print(read_array[1]);
+  Serial.print(read_array[2]);
+  Serial.println(read_array[3]);
 
-  if ( read_array[0] == array_start[0] && read_array[1] == array_start[1] && read_array[2] == array_start[2] && read_array[3] == array_start[3])
+  if ( read_array[0] == array_start[0] && read_array[1] == array_start[1]  && read_array[2] == array_start[2] && read_array[3] == array_start[3])
   {
+   
+
+
+ 
     while(true)
     {
-        if(direction)
-        {
-          leftMotor->run(FORWARD);
-          leftMotor->setSpeed(255);
-          rightMotor->run(BACKWARD);
-          rightMotor->setSpeed(255);
-          Serial.println("turning");
-        }
-        else
-        {
-          leftMotor->run(BACKWARD);
-          leftMotor->setSpeed(255);
-          rightMotor->run(FORWARD);
-          rightMotor->setSpeed(255);
-          Serial.println("turning");
-        }
-        // add a delay if required 
-        delay(10);
-        read(read_array);
-
+        Serial.println("Inside loop");
         if(read_array[0] == array_stop[0] && read_array[1] == array_stop[1] && read_array[2] == array_stop[2] && read_array[3] == array_stop[3])
         {
           Serial.println("break");
           break;
         }
 
+        if(direction)
+        {
+          leftMotor->run(FORWARD);
+          leftMotor->setSpeed(100);
+          rightMotor->run(BACKWARD);
+          rightMotor->setSpeed(100);
+          Serial.println("turning");
+        }
+        else
+        {
+          leftMotor->run(BACKWARD);
+          leftMotor->setSpeed(100);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(100);
+          Serial.println("turning");
+        }
+        // add a delay if required 
+
+        read(read_array);
+        Serial.print(read_array[0]);
+        Serial.print(read_array[1]);
+        Serial.print(read_array[2]);
+        Serial.println(read_array[3]);
+     
+       
+
+
+
     }
 
+  }
+  else
+  {
+    Serial.println("Assuming it goes straight");
+    StraightLine();
   }
 
 }
@@ -152,17 +174,17 @@ void function(bool array_start[4], bool array_stop[4], bool direction)
 void loop()
 {
 
-  int stop = 0;
-  int turning = 0;
-  int intersection = 0;
   
 
 
 
 
-  sensity_t = analogRead(sensityPin);
-  dist_t = sensity_t * MAX_RANG / ADC_SOLUTION;
-  Serial.println(dist_t, 0); 
+
+int start[4] = {0,0,1,1};
+int stop[4] = {1,1,0,1};
+int direction = 1;
+
+function(start, stop, direction);
 
   // distance_0 = distance_1;
   // distance_1 = distance_2;
@@ -202,7 +224,7 @@ void loop()
   // int y = 0;
   // int lidar = 0;
   // int nRight = 0;
-  // bool dir[4];
+  // int dir[4];
 
   // while(True)
   // {
@@ -210,9 +232,9 @@ void loop()
   //   read(dir);
   //   if(step == 0  && dir[0] && dir[1] && dir[2] && dir [3]) // intersection 0 
   //   {
-  //     bool start = {1,1,1,1};
-  //     bool stop = {1,1,1,1};
-  //     bool direction  = false;
+  //     int start = {1,1,1,1};
+  //     int stop = {1,1,1,1};
+  //     int direction  = false;
   //     function(start, stop, direction); 
   //     step = 1; // after entering the loop step becomes 1
   //   }
@@ -221,17 +243,17 @@ void loop()
 
   //     if (lidar)
   //     {
-  //       bool start = {0,0,1,1};
-  //       bool stop = {1,1,1,1};
+  //       int start = {0,0,1,1};
+  //       int stop = {1,1,1,1};
   //       direction = true;
   //       function(start, stop, direction);     
   //       step = 2;
   //     }
   //     else
   //     { //right turn 
-  //       bool start = {0, 0, 1, 1};
-  //       bool stop = {1,1,0,1};
-  //       bool direction = true;
+  //       int start = {0, 0, 1, 1};
+  //       int stop = {1,1,0,1};
+  //       int direction = true;
   //       nRight += 1; 
   //       function(start, stop, direction);
   //     }
@@ -244,9 +266,9 @@ void loop()
   //     if (lidar)
   //     {
   //       step = 2;
-  //       bool start = {1,1,0,1};
-  //       bool stop  = {1,1,1,0};
-  //       bool direction = true;
+  //       int start = {1,1,0,1};
+  //       int stop  = {1,1,1,0};
+  //       int direction = true;
   //       function(start,stop, direction); 
   //     }
   //     else
@@ -255,9 +277,9 @@ void loop()
   //       if (nRight % 2 == 1)
   //       {
   //         // we take a right turn
-  //         bool start = {1,1,0,1};
-  //         bool stop = {1,1,1,1};
-  //         bool direction = true;
+  //         int start = {1,1,0,1};
+  //         int stop = {1,1,1,1};
+  //         int direction = true;
   //         nRight += 1;
   //         function(start, stop, direction);
   //       }
