@@ -26,7 +26,7 @@ int green_ledPin = 13;
 int red_ledPin = 12;
 int frontLeftPin = 2;
 int frontRightPin = 3; // Connect sensor to input pin 3
-int leftlinesensorPin = 1;
+int leftlinesensorPin = 5;
 int rightlinesensorPin = 4; // Connect sensor to input pin 3
 int scanning = 0;
 int sensityPin = A0; 
@@ -72,7 +72,6 @@ void StraightLine(int valFrontLeft, int valFrontRight, int valRight, int valLeft
   leftMotor->run(FORWARD);
   rightMotor->setSpeed(255);
   rightMotor->run(FORWARD);
-  Serial.println("straight");
 
   }
   
@@ -81,14 +80,14 @@ void StraightLine(int valFrontLeft, int valFrontRight, int valRight, int valLeft
     leftMotor->setSpeed(255);
     rightMotor->run(BACKWARD);
     rightMotor->setSpeed(255);
-    Serial.println("Correcting itself");
+    //Serial.println("Correcting itself");
   }  
   else if (valFrontLeft && !valFrontRight && !valRight && !valLeft){
     leftMotor->run(BACKWARD);
     leftMotor->setSpeed(255);
     rightMotor->run(FORWARD);
     rightMotor->setSpeed(255);
-    Serial.println("Correcting itself");
+    //Serial.println("Correcting itself");
   }
 
 }
@@ -111,11 +110,15 @@ void turn_right()
     leftMotor->setSpeed(255);
     rightMotor->run(BACKWARD);
     rightMotor->setSpeed(255);
-    Serial.println("turning");
+    //Serial.println("turning");
 
       if(valFrontLeft && valFrontRight)
       {
-        Serial.println("break");
+        //Serial.println("break");
+            leftMotor->run(FORWARD);
+          leftMotor->setSpeed(255);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(255);
         break;
       }
       
@@ -139,11 +142,15 @@ void turn_left()
     leftMotor->setSpeed(255);
     rightMotor->run(FORWARD);
     rightMotor->setSpeed(255);
-    Serial.println("turning");
+    //Serial.println("turning");
 
       if(valFrontLeft && valFrontRight)
       {
-        Serial.println("break");
+        //Serial.println("break");
+            leftMotor->run(FORWARD);
+          leftMotor->setSpeed(255);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(255);
         break;
       }
       
@@ -168,7 +175,7 @@ void turn_right_at_intersection()
     leftMotor->setSpeed(255);
     rightMotor->run(BACKWARD);
     rightMotor->setSpeed(255);
-    Serial.println("turning");
+    //Serial.println("turning");
 
       if(!valRight)
       {
@@ -181,10 +188,20 @@ void turn_right_at_intersection()
     if(valFrontLeft && valFrontRight)
     {
       Serial.println("break");
+            leftMotor->run(FORWARD);
+          leftMotor->setSpeed(255);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(255);
       break;
     }
   }
 }
+
+void turn_180()
+{
+
+}
+
 void turn_left_at_intersection()
 {
   
@@ -203,7 +220,7 @@ void turn_left_at_intersection()
     leftMotor->setSpeed(255);
     rightMotor->run(FORWARD);
     rightMotor->setSpeed(255);
-    Serial.println("turning");
+    //Serial.println("turning");
 
       if(!valLeft)
       {
@@ -216,6 +233,10 @@ void turn_left_at_intersection()
     if(valFrontLeft && valFrontRight)
     {
       Serial.println("break");
+            leftMotor->run(FORWARD);
+          leftMotor->setSpeed(255);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(255);
       break;
     }
   }
@@ -260,6 +281,8 @@ void traverse_grid()
         // Reached first right
         if(valRight)
         {
+          Serial.println("Saw a right!!");
+          Serial.println(position);
           position += 1;
 
           if (position == 2)
@@ -267,20 +290,22 @@ void traverse_grid()
             turn_right();
           }
           
-          if (position == 3)
+          else if (position == 3)
           {
             turn_right_at_intersection();
           }
-          if (position == 7)
+          else if (position == 7)
           {
             turn_right();
           }
-          if (position == 8)
+          else if (position == 8)
           {
             turn_right_at_intersection();
           }
-          
+          else
+          {
           delay(500);
+          }
           break;
         }
         StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
@@ -420,5 +445,5 @@ void get_home(int position)
 }
 void loop()
 {
-get_home(9);
+traverse_grid();
 }
