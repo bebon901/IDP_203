@@ -173,27 +173,46 @@ void turn_right_at_intersection()
     valFrontRight = digitalRead(frontRightPin);
 
     leftMotor->run(FORWARD);
-    leftMotor->setSpeed(255);
+    leftMotor->setSpeed(100);
     rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(255);
+    rightMotor->setSpeed(100);
     //Serial.println("turning");
 
       if(!valRight)
       {
-        Serial.println("break");
+        Serial.println("first_condition");
+        delay(200);
         break;
       }
   }
+  Serial.println("Got here");
   while(true)
   {
+      valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+    if(valRight)
+    {
+      Serial.println("Stopping!");
+      break;
+    }
+  }
+
+  while(true)
+  {
+      valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
     if(valFrontLeft && valFrontRight)
     {
-      Serial.println("break");
+      Serial.println("Stopping!");
             leftMotor->run(FORWARD);
-          leftMotor->setSpeed(255);
+          leftMotor->setSpeed(100);
           rightMotor->run(FORWARD);
-          rightMotor->setSpeed(255);
-          delay(250);
+          rightMotor->setSpeed(100);
+          delay(100);
       break;
     }
   }
@@ -219,9 +238,9 @@ void turn_left_at_intersection()
     valFrontRight = digitalRead(frontRightPin);
 
     leftMotor->run(BACKWARD);
-    leftMotor->setSpeed(255);
+    leftMotor->setSpeed(100);
     rightMotor->run(FORWARD);
-    rightMotor->setSpeed(255);
+    rightMotor->setSpeed(100);
     //Serial.println("turning");
 
       if(!valLeft)
@@ -236,9 +255,9 @@ void turn_left_at_intersection()
     {
       Serial.println("break");
             leftMotor->run(FORWARD);
-          leftMotor->setSpeed(255);
+          leftMotor->setSpeed(100);
           rightMotor->run(FORWARD);
-          rightMotor->setSpeed(255);
+          rightMotor->setSpeed(100);
       break;
     }
   }
@@ -265,7 +284,7 @@ void scan_using_dist()
 }
 void traverse_grid()
 {
-  int position = 0;
+  int position = 2;
     int valLeft = digitalRead(leftlinesensorPin); // read left input value
     int valRight = digitalRead(rightlinesensorPin); // read right input value
     int valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -297,21 +316,24 @@ void traverse_grid()
               valFrontLeft = digitalRead(frontLeftPin); // read left input value
               valFrontRight = digitalRead(frontRightPin); // read right input value
               StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
-              delay(100);
+              delay(20);
             }
           }
           
           else if (position == 3)
           {
+            Serial.println("HERE");
             turn_right_at_intersection();
-            for (int i=0; i<10; i++)
+            for (int i=0; i<100; i++)
             {
+              
+            Serial.println("Straight_liene");
               valLeft = digitalRead(leftlinesensorPin); // read left input value
               valRight = digitalRead(rightlinesensorPin); // read right input value
               valFrontLeft = digitalRead(frontLeftPin); // read left input value
               valFrontRight = digitalRead(frontRightPin); // read right input value
               StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
-              delay(100);
+              delay(20);
             }
           }
           else if (position == 7)
