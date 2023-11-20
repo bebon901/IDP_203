@@ -5,12 +5,12 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61);
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(1);
-Adafruit_DCMotor *rightMotor = AFMS.getMotor(2);
-int frontLeftPin = 4;
-int frontRightPin = 1; // Connect sensor to input pin 3
-int leftlinesensorPin = 2;
-int rightlinesensorPin = 3; // Connect sensor to input pin 3
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(3);
+int frontLeftPin = 2;
+int frontRightPin = 3; // Connect sensor to input pin 3
+int leftlinesensorPin = 5;
+int rightlinesensorPin = 4; // Connect sensor to input pin 3
 void setup() {
  Serial.begin(9600); // Init the serial port
  pinMode(leftlinesensorPin, INPUT); // declare LED as output
