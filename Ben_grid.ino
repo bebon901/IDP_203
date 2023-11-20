@@ -235,28 +235,22 @@ void turn_left_at_intersection()
     valFrontRight = digitalRead(frontRightPin);
 
     leftMotor->run(BACKWARD);
-    leftMotor->setSpeed(100);
+    leftMotor->setSpeed(255);
     rightMotor->run(FORWARD);
-    rightMotor->setSpeed(100);
+    rightMotor->setSpeed(255);
     //Serial.println("turning");
 
-      if(!valLeft)
+      if(valRight)
       {
-        Serial.println("break");
+        //Serial.println("break");
+            leftMotor->run(FORWARD);
+          leftMotor->setSpeed(150);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(140);
+          delay(250);
         break;
       }
-  }
-  while(true)
-  {
-    if(valFrontLeft && valFrontRight)
-    {
-      Serial.println("break");
-            leftMotor->run(FORWARD);
-          leftMotor->setSpeed(100);
-          rightMotor->run(FORWARD);
-          rightMotor->setSpeed(100);
-      break;
-    }
+      
   }
 }
 
@@ -411,6 +405,7 @@ void drive_till_intersection()
     int x = check_for_block();
     if (valLeft or valRight)
     {
+      Serial.println("Intersection Detected!");
       break;
     }
   }
@@ -456,6 +451,7 @@ int check_for_block()
 }
 void get_home(int position)
 {
+  Serial.println(position);
   if (position != 0)
   {
     if (position == 1)
@@ -518,5 +514,7 @@ void get_home(int position)
 }
 void loop()
 {
-traverse_grid();
+//traverse_grid();
+Serial.println("Hellow");
+get_home(4);
 }
