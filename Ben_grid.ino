@@ -160,7 +160,6 @@ void turn_left()
 
 void turn_right_at_intersection()
 {
-  
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
   int valRight = digitalRead(rightlinesensorPin); // read right input value
   int valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -173,46 +172,22 @@ void turn_right_at_intersection()
     valFrontRight = digitalRead(frontRightPin);
 
     leftMotor->run(FORWARD);
-    leftMotor->setSpeed(200);
+    leftMotor->setSpeed(255);
     rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(200);
+    rightMotor->setSpeed(255);
     //Serial.println("turning");
 
-      if(!valRight)
+      if(valLeft)
       {
-        Serial.println("first_condition");
-        delay(200);
+        //Serial.println("break");
+            leftMotor->run(FORWARD);
+          leftMotor->setSpeed(255);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(255);
+          delay(250);
         break;
       }
-  }
-  Serial.println("Got here");
-  int straight = 0;
-  while(true)
-  {
-      valLeft = digitalRead(leftlinesensorPin); // read left input value
-    valRight = digitalRead(rightlinesensorPin); // read right input value
-    valFrontLeft = digitalRead(frontLeftPin); // read left input value
-    valFrontRight = digitalRead(frontRightPin);
-    if(valRight)
-    {
-      Serial.println("Stopping!");
-      break;
-    }
-  }
-  if (!straight)
-  {
-    while(true)
-    {
-        valLeft = digitalRead(leftlinesensorPin); // read left input value
-      valRight = digitalRead(rightlinesensorPin); // read right input value
-      valFrontLeft = digitalRead(frontLeftPin); // read left input value
-      valFrontRight = digitalRead(frontRightPin);
-      if(valFrontLeft && valFrontRight)
-      {
-        Serial.println("Stopping!");
-        break;
-      }
-    }
+      
   }
 }
 
