@@ -19,15 +19,15 @@ float lidar = 100;
 DFRobot_VL53L0X sensor;
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(3);
-Adafruit_DCMotor *rightMotor = AFMS.getMotor(4);
-
-int green_ledPin = 13;
-int red_ledPin = 12;
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(3);
 int frontLeftPin = 2;
 int frontRightPin = 3; // Connect sensor to input pin 3
 int leftlinesensorPin = 5;
 int rightlinesensorPin = 4; // Connect sensor to input pin 3
+
+int green_ledPin = 13;
+int red_ledPin = 12;
 int scanning = 0;
 int sensityPin = A0; 
 
@@ -68,25 +68,25 @@ void StraightLine(int valFrontLeft, int valFrontRight, int valRight, int valLeft
   {
     // On a line, going straight. All good
     //continue straight
-      leftMotor->setSpeed(255);
+      leftMotor->setSpeed(150);
   leftMotor->run(FORWARD);
-  rightMotor->setSpeed(255);
+  rightMotor->setSpeed(140);
   rightMotor->run(FORWARD);
 
   }
   
   else if (!valFrontLeft  && valFrontRight && !valRight && !valLeft){
     leftMotor->run(FORWARD);
-    leftMotor->setSpeed(255);
+    leftMotor->setSpeed(150);
     rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(255);
+    rightMotor->setSpeed(150);
     //Serial.println("Correcting itself");
   }  
   else if (valFrontLeft && !valFrontRight && !valRight && !valLeft){
     leftMotor->run(BACKWARD);
-    leftMotor->setSpeed(255);
+    leftMotor->setSpeed(150);
     rightMotor->run(FORWARD);
-    rightMotor->setSpeed(255);
+    rightMotor->setSpeed(150);
     //Serial.println("Correcting itself");
   }
 
@@ -181,9 +181,9 @@ void turn_right_at_intersection()
       {
         //Serial.println("break");
             leftMotor->run(FORWARD);
-          leftMotor->setSpeed(255);
+          leftMotor->setSpeed(150);
           rightMotor->run(FORWARD);
-          rightMotor->setSpeed(255);
+          rightMotor->setSpeed(140);
           delay(250);
         break;
       }
@@ -281,7 +281,7 @@ void scan_using_dist()
 }
 void traverse_grid()
 {
-  int position = 2;
+  int position = 0;
     int valLeft = digitalRead(leftlinesensorPin); // read left input value
     int valRight = digitalRead(rightlinesensorPin); // read right input value
     int valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -350,11 +350,13 @@ void traverse_grid()
           }
           else if (position == 8)
           {
-            Serial.println("turning at 8");
+            Serial.println("HERE");
             turn_right_at_intersection();
+            
             Serial.println("Straight_liene");
             for (int i=0; i<100; i++)
             {
+              
               valLeft = digitalRead(leftlinesensorPin); // read left input value
               valRight = digitalRead(rightlinesensorPin); // read right input value
               valFrontLeft = digitalRead(frontLeftPin); // read left input value
