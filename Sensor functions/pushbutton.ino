@@ -16,7 +16,7 @@ void loop() {
     long int push = millis();
     digitalWrite(blue_led, LOW);
   }
-  if (millis() - push == time_is_up) { //go back and turn led on after 5 mins
+  if (millis() - push > time_is_up) { //go back and turn led on after 5 mins
     //return to start block
     digitalWrite(blue_led, HIGH);
   }
