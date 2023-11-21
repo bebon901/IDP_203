@@ -10,6 +10,7 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 #define ADC_SOLUTION (1023.0)//ADC accuracy of Arduino UNO is 10bit
 // select the input pin
 float dist_t, sensity_t;
+unsigned long previousMillis = 0;
 
 float distance_0 = 100;
 float distance_1 = 100;
@@ -29,6 +30,7 @@ int rightlinesensorPin = 4; // Connect sensor to input pin 3
 
 int green_ledPin = 13;
 int red_ledPin = 12;
+int blue_ledPin = 11;
 int scanning = 0;
 int sensityPin = A0; 
 int buttonPin = 7;
@@ -37,11 +39,13 @@ void setup() {
  Serial.begin(9600); // Init the serial port
  Wire.begin();
  pinMode(red_ledPin, OUTPUT);
-pinMode(green_ledPin, OUTPUT);
+ pinMode(green_ledPin, OUTPUT);
+ pinMode(blue_ledPin, OUTPUT);
  pinMode(leftlinesensorPin, INPUT); // declare LED as output
  pinMode(rightlinesensorPin, INPUT); // declare Micro switch as input
  pinMode(frontRightPin, INPUT); // declare LED as output
  pinMode(frontLeftPin, INPUT); // declare Micro switch as input
+ pinMode(buttonPin, INPUT); //declare push button as input
  Wire.begin();
  //Set I2C sub-device address
  sensor.begin(0x50);
@@ -79,17 +83,17 @@ void led_flash(){ //flashes blue LED at 2Hz - add this function in code
     }
 
     // set the LED with the ledState of the variable:
-    digitalWrite(blue_led, blue_ledState);
+    digitalWrite(blue_ledPin, blue_ledState);
 
   }
 }
 
-void move_from_start(int valPush){
-  if valPush 
-}
+// void move_from_start(int valPush){
+//   if valPush 
+// }
 
 void StraightLine(int valFrontLeft, int valFrontRight, int valRight, int valLeft){
-
+  led_flash();
   if (valFrontLeft && valFrontRight && !valRight && !valLeft)
   {
     // On a line, going straight. All good
@@ -120,13 +124,14 @@ void StraightLine(int valFrontLeft, int valFrontRight, int valRight, int valLeft
 
 void turn_right()
 {
-  
+  led_flash();
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
   int valRight = digitalRead(rightlinesensorPin); // read right input value
   int valFrontLeft = digitalRead(frontLeftPin); // read left input value
   int valFrontRight = digitalRead(frontRightPin); // read right input value
   while(true)
   {
+    led_flash();
     valLeft = digitalRead(leftlinesensorPin); // read left input value
     valRight = digitalRead(rightlinesensorPin); // read right input value
     valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -153,7 +158,7 @@ void turn_right()
 }
 void turn_left()
 {
-  
+  led_flash();
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
   int valRight = digitalRead(rightlinesensorPin); // read right input value
   int valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -186,6 +191,7 @@ void turn_left()
 
 void turn_right_at_intersection()
 {
+  led_flash();
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
   int valRight = digitalRead(rightlinesensorPin); // read right input value
   int valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -579,6 +585,8 @@ void loop()
     //restart / start
     if (is_running == true){
       is_running = false;
+      previousMillis = 0;
+
     }
     else{
       is_running = true;
@@ -587,6 +595,8 @@ void loop()
   if (is_running == true){
     traverse_grid();
   }
+  Serial.println(is_running);
+  //Serial.println(buttonPin);
 //Serial.println("Hellow");
 //get_home(9);
 }
