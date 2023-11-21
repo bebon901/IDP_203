@@ -206,7 +206,7 @@ int valLeft = digitalRead(leftlinesensorPin); // read left input value
     valFrontRight = digitalRead(frontRightPin);
 
     leftMotor->run(FORWARD);
-    leftMotor->setSpeed(200);
+    leftMotor->setSpeed(180);
     rightMotor->run(BACKWARD);
     rightMotor->setSpeed(200);
     //Serial.println("turning");
@@ -310,7 +310,7 @@ void traverse_grid()
         valFrontLeft = digitalRead(frontLeftPin); // read left input value
         valFrontRight = digitalRead(frontRightPin); // read right input value
         int x = check_for_block();
-        Serial.println(x)
+        Serial.println(x);
         if (x)
         {
           leftMotor->run(FORWARD);
@@ -470,7 +470,7 @@ void pass_over_intersection()
 int check_for_block()
 {
   int x = sensor.getDistance();
-  if (x < 50)
+  if (x < 50 && x > 30)
   {
     digitalWrite(red_ledPin, HIGH);
     digitalWrite(green_ledPin, LOW);
