@@ -383,7 +383,7 @@ void traverse_grid()
           leftMotor->setSpeed(0);
           rightMotor->run(FORWARD);
           rightMotor->setSpeed(0);
-          delay(10000);
+          // /delay(10000);
 
         }
         // Reached first right
@@ -674,6 +674,9 @@ void loop()
 {
   start_to_grid();
 traverse_grid();
+turn_left_at_intersection(); // Needs to be different funtion
+// Then add code to go to green box by default.
+delay(2000);
 //Serial.println("Hellow");
 //delay(100000);
 //get_home(3);
