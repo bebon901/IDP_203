@@ -592,18 +592,39 @@ void get_home(int position)
       // Drive forwards
       drive_till_intersection();
       pass_over_intersection();
+      
     }
     if (position == 3)
     {
       // Drive forwards, turn left
       drive_till_intersection();
       turn_left_at_intersection();
+      for (int i=0; i<50; i++)
+            {
+              
+              valLeft = digitalRead(leftlinesensorPin); // read left input value
+              valRight = digitalRead(rightlinesensorPin); // read right input value
+              valFrontLeft = digitalRead(frontLeftPin); // read left input value
+              valFrontRight = digitalRead(frontRightPin); // read right input value
+              StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+              delay(20);
+            }
     }
     if (position == 4)
     {
       // Drive forwards, turn left
       drive_till_intersection();
       turn_left();
+      for (int i=0; i<50; i++)
+            {
+              
+              valLeft = digitalRead(leftlinesensorPin); // read left input value
+              valRight = digitalRead(rightlinesensorPin); // read right input value
+              valFrontLeft = digitalRead(frontLeftPin); // read left input value
+              valFrontRight = digitalRead(frontRightPin); // read right input value
+              StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+              delay(20);
+            }
     }
     if (position == 5)
     {
@@ -651,9 +672,9 @@ void get_home(int position)
 }
 void loop()
 {
-  //start_to_grid();
-//traverse_grid();
+  start_to_grid();
+traverse_grid();
 //Serial.println("Hellow");
 //delay(100000);
-get_home(4);
+//get_home(3);
 }
