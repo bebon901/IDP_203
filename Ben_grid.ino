@@ -901,8 +901,8 @@ void get_home(int position)
     {
       // Drive forwards
       drive_till_intersection();
-      pass_over_intersection();
-      drive_straight_for_a_bit();
+      //pass_over_intersection();
+      //drive_straight_for_a_bit();
     }
     if (position == 2)
     {
