@@ -362,13 +362,14 @@ void turn_right_at_center()
         //Serial.println("break");
         Serial.println("break2");
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(straight_speed);
+        leftMotor->setSpeed(100);
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(straight_speed);
+        rightMotor->setSpeed(100);
         break;
       }
       
   }
+  drive_straight_for_a_bit();
 
 }
   
