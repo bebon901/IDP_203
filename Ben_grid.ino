@@ -6,7 +6,11 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 #define MAX_RANG (510)//the max measurement value of the module is 510cm(a little bit longer
 #include "Wire.h"
 #include "DFRobot_VL53L0X.h"
-
+#include <Servo.h>
+Servo myservo; // create servo object to control a servo
+// twelve servo objects can be created on most boards
+int pos = 0; // variable to store the servo position
+int servo_pin = 9;
 #define ADC_SOLUTION (1023.0)//ADC accuracy of Arduino UNO is 10bit
 // select the input pin
 float dist_t, sensity_t;
@@ -45,6 +49,9 @@ pinMode(green_ledPin, OUTPUT);
  pinMode(frontRightPin, INPUT); // declare LED as output
  pinMode(frontLeftPin, INPUT); // declare Micro switch as input
  Wire.begin();
+ // Open Grabber
+ myservo.attach(servo_pin);
+ myservo.write(0);
  //Set I2C sub-device address
  sensor.begin(0x50);
  //Set to Back-to-back mode and high precision mode
@@ -262,7 +269,7 @@ void turn_right_at_center()
   while(true)
   {
     valLeft = digitalRead(leftlinesensorPin); // read left input value
-    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valRight = digitalRead(rightlinesensorPin); // read right inpuFbrt value
     valFrontLeft = digitalRead(frontLeftPin); // read left input value
     valFrontRight = digitalRead(frontRightPin);
 
@@ -285,15 +292,15 @@ void turn_right_at_center()
     valRight = digitalRead(rightlinesensorPin); // read right input value
     valFrontLeft = digitalRead(frontLeftPin); // read left input value
     valFrontRight = digitalRead(frontRightPin);
-    Serial.println(valRight);
+    //Serial.println(valRight);
       if(valRight)
       {
         //Serial.println("break");
         Serial.println("break2");
-            leftMotor->run(FORWARD);
-          leftMotor->setSpeed(straight_speed);
-          rightMotor->run(FORWARD);
-          rightMotor->setSpeed(straight_speed);
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(straight_speed);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(straight_speed);
         break;
       }
       
@@ -488,7 +495,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
               leftMotor->setSpeed(0);
               rightMotor->run(FORWARD);
               rightMotor->setSpeed(0);
-              delay(10000);
+              delay(1000);
               // Done!
             }
           }
@@ -598,6 +605,8 @@ void traverse_grid()
           leftMotor->setSpeed(0);
           rightMotor->run(FORWARD);
           rightMotor->setSpeed(0);
+          Serial.println("Grabbing Block");
+          myservo.write(90);
           Serial.println(position);
           delay(1000);
           turn_180();
@@ -630,7 +639,7 @@ void traverse_grid()
               valFrontLeft = digitalRead(frontLeftPin); // read left input value
               valFrontRight = digitalRead(frontRightPin); // read right input value
               StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
-              
+              delay(20);
             }
           }
           
@@ -662,6 +671,7 @@ void traverse_grid()
               valFrontLeft = digitalRead(frontLeftPin); // read left input value
               valFrontRight = digitalRead(frontRightPin); // read right input value
               StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+              delay(20);
               
             }
           }
@@ -679,6 +689,7 @@ void traverse_grid()
               valFrontLeft = digitalRead(frontLeftPin); // read left input value
               valFrontRight = digitalRead(frontRightPin); // read right input value
               StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+              delay(20);
               
             }
           }
@@ -693,6 +704,7 @@ void traverse_grid()
               valFrontLeft = digitalRead(frontLeftPin); // read left input value
               valFrontRight = digitalRead(frontRightPin); // read right input value
               StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+              delay(20);
               
             }
           }
@@ -774,6 +786,59 @@ int check_for_block()
     digitalWrite(red_ledPin, LOW);
     digitalWrite(green_ledPin, HIGH);
     return 0;
+  }
+}
+void reverse_to_position_1()
+{
+      int valLeft = digitalRead(leftlinesensorPin); // read left input value
+    int valRight = digitalRead(rightlinesensorPin); // read right input value
+    int valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    int valFrontRight = digitalRead(frontRightPin); // read right input value
+  while(true)
+  {
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin); // read right input value
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(straight_speed);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(straight_speed);
+    if (valLeft)
+    {
+      break;
+    }
+  }
+  // we are over the start box now
+  // turn right till aligned
+  while (true)
+  { 
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin); // read right input value
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(straight_speed);
+    rightMotor->run(BACKWARD);
+    rightMotor->setSpeed(straight_speed);
+    if (valFrontLeft && valFrontRight)
+    {
+      break;
+    }
+  }
+  while (true)
+  {
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin); // read right input value
+    StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+    if (valRight)
+    {
+      turn_right();
+      break;
+      // Finish this 
+    }
   }
 }
 void start_to_grid()
@@ -904,17 +969,23 @@ void get_home(int position)
 }
 void loop()
 {
+  /*
   start_to_grid();
   Serial.println("Taversign");
 traverse_grid();
   Serial.println("turning right at center");
 turn_right_at_center(); 
   Serial.println("going to bocs");
+  */
 go_to_box(1);
 
   Serial.println("Done!");
 // Then add code to go to green box by default.
 delay(2000);
+vague_turn_180();
+drive_till_intersection();
+turn_left();
+
 //Serial.println("Hellow");
 //delay(100000);
 //get_home(3);
