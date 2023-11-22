@@ -5,7 +5,7 @@ int pos = 0; // variable to store the servo position
 int servo_pin = 9;
 int green_ledPin = 13;
 int red_ledPin = 12;
-int magnetPin = 2; //change these 3 values according to connections
+int magnetPin = 6; //change these 3 values according to connections
 bool block_found = true; //variable can be used for determining
                                 //where to bring the block
 bool block_is_delivered = false; //this could be used differently,
