@@ -54,6 +54,7 @@ pinMode(green_ledPin, OUTPUT);
  // Open Grabber
  myservo.attach(servo_pin);
  myservo.write(0);
+
  //Set I2C sub-device address
  sensor.begin(0x50);
  //Set to Back-to-back mode and high precision mode
@@ -298,7 +299,7 @@ void turn_left_at_center()
     valFrontLeft = digitalRead(frontLeftPin); // read left input value
     valFrontRight = digitalRead(frontRightPin);
     //Serial.println(valRight);
-      if(valRight)
+      if(valFrontLeft && valFrontRight)
       {
         //Serial.println("break");
         Serial.println("break2");
@@ -356,7 +357,7 @@ void turn_right_at_center()
     valFrontLeft = digitalRead(frontLeftPin); // read left input value
     valFrontRight = digitalRead(frontRightPin);
     //Serial.println(valRight);
-      if(valRight)
+      if(valFrontLeft && valFrontRight)
       {
         //Serial.println("break");
         Serial.println("break2");
@@ -391,9 +392,42 @@ void turn_180()
     rightMotor->run(FORWARD);
     rightMotor->setSpeed(190);
     //Serial.println("turning");
-
-      if(!valFrontLeft && !valFrontRight)
+      if (valRight && !valLeft)
       {
+        // Correct the turn
+        while (!valLeft)
+        {
+          valLeft = digitalRead(leftlinesensorPin); // read left input value
+          valRight = digitalRead(rightlinesensorPin); // read right input value
+          valFrontLeft = digitalRead(frontLeftPin); // read left input value
+          valFrontRight = digitalRead(frontRightPin);
+          leftMotor->run(BACKWARD);
+          leftMotor->setSpeed(180);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(0);
+        }
+      }
+      if (!valRight && valLeft)
+      {
+        // Correct the turn
+        while (!valRight)
+        {
+          valLeft = digitalRead(leftlinesensorPin); // read left input value
+          valRight = digitalRead(rightlinesensorPin); // read right input value
+          valFrontLeft = digitalRead(frontLeftPin); // read left input value
+          valFrontRight = digitalRead(frontRightPin);
+          leftMotor->run(BACKWARD);
+          leftMotor->setSpeed(0);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(170);
+        }
+      }
+      if(valRight && valLeft)
+      {
+          leftMotor->run(BACKWARD);
+          leftMotor->setSpeed(180);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(170);
         Serial.println("Half Spun!");
         break;
       }
@@ -409,9 +443,24 @@ void turn_180()
 
     //Serial.println("turning");
 
+      if(!valFrontLeft && !valFrontRight)
+      {
+        Serial.println("Over Halfway! Spinning!");
+        break;
+      }
+  } while(true)
+  {
+  led_flash();
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+
+    //Serial.println("turning");
+
       if(valFrontLeft && valFrontRight)
       {
-        Serial.println("Finished Spinning!");
+        Serial.println("Over Halfway! Spinning!");
         
     leftMotor->run(FORWARD);
     leftMotor->setSpeed(0);
@@ -681,7 +730,7 @@ void traverse_grid()
           rightMotor->run(FORWARD);
           rightMotor->setSpeed(0);
           Serial.println("Grabbing Block");
-          myservo.write(90);
+          myservo.write(145);
           Serial.println(position);
           delay(1000);
           turn_180();
@@ -1093,6 +1142,8 @@ delay(2000);
 drive_till_intersection();
 turn_left();
 
+//turn_180();
+//delay(10000);
 //Serial.println("Hellow");
 //delay(100000);
 //get_home(3);
