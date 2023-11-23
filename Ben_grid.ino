@@ -349,7 +349,7 @@ void turn_right_at_center()
   }
   time_stamp = millis();
   
-  while((millis() - time_stamp < 700) )
+  while((millis() - time_stamp < 200) )
   {
     led_flash();      
     int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -392,7 +392,7 @@ void turn_right_at_center()
 }
 
 
-void turn_right_at_center()
+void turn_left_at_center()
 {
   led_flash();
   Serial.println("Started");
@@ -429,7 +429,7 @@ void turn_right_at_center()
   }
   time_stamp = millis();
   
-  while((millis() - time_stamp < 700) )
+  while((millis() - time_stamp < 300) )
   {
     led_flash();      
     int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -701,6 +701,11 @@ void scan_using_dist()
 
 void go_to_box(int magnetic)
 {
+  int valLeft = digitalRead(leftlinesensorPin); // read left input value
+ int valRight = digitalRead(rightlinesensorPin); // read right input value
+ int valFrontLeft = digitalRead(frontLeftPin); // read left input value
+ int valFrontRight = digitalRead(frontRightPin); // read right input value
+ int deposit_box = 0;
   while(true){
   led_flash();
  int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -770,7 +775,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
               {
   led_flash();
                 // Wait for the front line sensors to detect again
-                      valLeft = digitalRead(leftlinesensorPin); // read left input value
+                valLeft = digitalRead(leftlinesensorPin); // read left input value
                 valRight = digitalRead(rightlinesensorPin); // read right input value
                 valFrontLeft = digitalRead(frontLeftPin); // read left input value
                 valFrontRight = digitalRead(frontRightPin);
@@ -787,8 +792,14 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
               leftMotor->setSpeed(0);
               rightMotor->run(FORWARD);
               rightMotor->setSpeed(0);
+              myservo.write(0);
+              deposit_box = 1;
               delay(1000);
               // Done!
+            }
+            if (deposit_box)
+            {
+              break;
             }
           }
         }
@@ -834,9 +845,9 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
               // Guys... We've just left the line...
               // Make a small turn to the right, point towards the box more
               leftMotor->run(FORWARD);
-              leftMotor->setSpeed(70);
+              leftMotor->setSpeed(100);
               rightMotor->run(BACKWARD);
-              rightMotor->setSpeed(70);
+              rightMotor->setSpeed(100);
               delay(200);
               leftMotor->run(FORWARD);
               leftMotor->setSpeed(255);
@@ -863,15 +874,244 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
               leftMotor->setSpeed(0);
               rightMotor->run(FORWARD);
               rightMotor->setSpeed(0);
+              myservo.write(0);
+              delay(1000);
+              deposit_box = 1;
               // Done!
+            }
+            if (deposit_box)
+            {
+              break;
             }
           }
         }
           
           // Now facing the correct direction.
-        }
+    if (deposit_box)
+    {
+      break;
+    }
   }
-   
+
+  }
+
+// Aligning up!
+
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(200);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(200);
+while (true)
+{
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+    if (valRight)
+    {
+      leftMotor->run(FORWARD);
+      leftMotor->setSpeed(200);
+      rightMotor->run(FORWARD);
+      rightMotor->setSpeed(0);
+    }
+    if (valLeft)
+    {
+      leftMotor->run(FORWARD);
+      leftMotor->setSpeed(0);
+      rightMotor->run(FORWARD);
+      rightMotor->setSpeed(200);
+    }
+    if (valLeft && valRight)
+    {
+      break;
+    }
+}
+
+
+
+    leftMotor->run(BACKWARD);
+    leftMotor->setSpeed(200);
+    rightMotor->run(BACKWARD);
+    rightMotor->setSpeed(150);
+    delay(1000);
+
+  // Now, we will return to the start position
+  while (true)
+  {
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+    if (valLeft || valRight)
+    {
+      break;
+    }
+  }
+  // Align horizontally!
+
+   leftMotor->run(FORWARD);
+    leftMotor->setSpeed(200);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(200);
+while (true)
+{
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+    if (valRight)
+    {
+      leftMotor->run(FORWARD);
+      leftMotor->setSpeed(200);
+      rightMotor->run(FORWARD);
+      rightMotor->setSpeed(0);
+    }
+    if (valLeft)
+    {
+      leftMotor->run(FORWARD);
+      leftMotor->setSpeed(0);
+      rightMotor->run(FORWARD);
+      rightMotor->setSpeed(200);
+    }
+    if (valLeft && valRight)
+    {
+      break;
+    }
+}
+
+// Reverse backwards for a bit...
+
+      leftMotor->run(BACKWARD);
+      leftMotor->setSpeed(200);
+      rightMotor->run(BACKWARD);
+      rightMotor->setSpeed(200);
+      delay(1000);
+      leftMotor->run(BACKWARD);
+      leftMotor->setSpeed(0);
+      rightMotor->run(BACKWARD);
+      rightMotor->setSpeed(0);
+      delay(5000);
+// drive forward for a bit
+while (true)
+{
+  
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+     leftMotor->run(FORWARD);
+    leftMotor->setSpeed(200);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(200);
+    if (valLeft || valRight)
+    {
+      break;
+    }
+}
+  // Now need to align with the forward direction
+  while (true)
+  {
+    if (magnetic)
+    {
+      leftMotor->run(FORWARD);
+      leftMotor->setSpeed(200);
+      rightMotor->run(BACKWARD);
+      rightMotor->setSpeed(200);
+      valLeft = digitalRead(leftlinesensorPin); // read left input value
+      valRight = digitalRead(rightlinesensorPin); // read right input value
+      valFrontLeft = digitalRead(frontLeftPin); // read left input value
+      valFrontRight = digitalRead(frontRightPin);
+    }
+    if (!magnetic)
+    {
+      leftMotor->run(BACKWARD);
+      leftMotor->setSpeed(200);
+      rightMotor->run(FORWARD);
+      rightMotor->setSpeed(200);
+      valLeft = digitalRead(leftlinesensorPin); // read left input value
+      valRight = digitalRead(rightlinesensorPin); // read right input value
+      valFrontLeft = digitalRead(frontLeftPin); // read left input value
+      valFrontRight = digitalRead(frontRightPin);
+    }
+    if (valFrontLeft && valFrontRight)
+    {
+      break;
+    }
+  }
+
+  // Now go to the start line. stright, Turn left/right, go straight, turn left/right.
+
+  while (true)
+  {
+    
+      valLeft = digitalRead(leftlinesensorPin); // read left input value
+      valRight = digitalRead(rightlinesensorPin); // read right input value
+      valFrontLeft = digitalRead(frontLeftPin); // read left input value
+      valFrontRight = digitalRead(frontRightPin);
+      StraightLine(valFrontLeft, valFrontRight, valRight , valLeft);
+
+      if (valLeft && !valFrontLeft && !valFrontRight)
+      {
+        turn_left();
+      }
+      if (valRight && !valFrontLeft && !valFrontRight)
+      {
+        turn_right();
+      }
+      if (valLeft && valFrontLeft && valFrontRight)
+      {
+        turn_left_at_intersection();
+        break;
+      }
+      if (valRight && valFrontLeft && valFrontRight)
+      {
+        turn_right_at_intersection();
+        break;
+      }
+  }
+
+  
+      leftMotor->run(BACKWARD);
+      leftMotor->setSpeed(120);
+      rightMotor->run(BACKWARD);
+      rightMotor->setSpeed(90);
+
+while (true)
+{
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+    if (valRight)
+    {
+      leftMotor->run(BACKWARD);
+      leftMotor->setSpeed(200);
+      rightMotor->run(FORWARD);
+      rightMotor->setSpeed(0);
+    }
+    if (valLeft)
+    {
+      leftMotor->run(FORWARD);
+      leftMotor->setSpeed(0);
+      rightMotor->run(BACKWARD);
+      rightMotor->setSpeed(200);
+    }
+    if (valLeft && valRight)
+    {
+      break;
+    }
+    
+}
+      leftMotor->run(BACKWARD);
+      leftMotor->setSpeed(140);
+      rightMotor->run(BACKWARD);
+      rightMotor->setSpeed(100);
+      delay(5000);
+      leftMotor->run(BACKWARD);
+      leftMotor->setSpeed(0);
+      rightMotor->run(BACKWARD);
+      rightMotor->setSpeed(0);
+      delay(5000);
 }
 
 
@@ -1300,24 +1540,32 @@ void get_home(int position)
 void loop()
 {
   
-  start_to_grid();
+  //start_to_grid();
   Serial.println("Traversing");
-traverse_grid();
+//traverse_grid();
   Serial.println("turning right at center");
-turn_right_at_center();
+//turn_right_at_center();
   Serial.println("going to bocs");
 
 go_to_box(block_magnetic);
+start_to_grid();
     leftMotor->run(FORWARD);
     leftMotor->setSpeed(0);
     rightMotor->run(FORWARD);
     rightMotor->setSpeed(0);
   Serial.println("Done!");
+
+// Go back for a bit
+
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(0);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(0);
+
+
 // Then add code to go to green box by default.
 delay(20000);
-//vague_turn_180();
-drive_till_intersection();
-turn_left();
+
 
 //turn_180();
 //delay(10000);
