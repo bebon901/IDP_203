@@ -749,7 +749,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
           // Now facing the correct direction.
           // Follow this line for a while, until it finishes
           float time_0 = millis();
-          while (millis() - time_0 < 800)
+          while (millis() - time_0 < 1600)
           {
             valLeft = digitalRead(leftlinesensorPin); // read left input value
             valRight = digitalRead(rightlinesensorPin); // read right input value
@@ -776,10 +776,10 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
           }
           delay(800);
           leftMotor->run(BACKWARD);
-          leftMotor->setSpeed(200);
+          leftMotor->setSpeed(150);
           rightMotor->run(FORWARD);
-          rightMotor->setSpeed(200);
-          delay(600);
+          rightMotor->setSpeed(150);
+          delay(300);
           leftMotor->run(FORWARD);
           leftMotor->setSpeed(255);
           rightMotor->run(FORWARD);
