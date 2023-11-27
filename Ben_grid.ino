@@ -77,7 +77,7 @@ pinMode(green_ledPin, OUTPUT);
 
 
   // Drive up to the start!
- //` start_to_grid();
+ start_to_grid();
 }
 
 
@@ -710,14 +710,13 @@ void turn_180()
 
 void turn_left_at_intersection()
 {
-  
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
   int valRight = digitalRead(rightlinesensorPin); // read right input value
   int valFrontLeft = digitalRead(frontLeftPin); // read left input value
   int valFrontRight = digitalRead(frontRightPin); // read right input value
   while(true)
   {
-  led_flash();
+    led_flash();
     valLeft = digitalRead(leftlinesensorPin); // read left input value
     valRight = digitalRead(rightlinesensorPin); // read right input value
     valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -731,6 +730,19 @@ void turn_left_at_intersection()
 
       if(valRight)
       {
+        while (true)
+        {
+          valLeft = digitalRead(leftlinesensorPin); // read left input value
+          valRight = digitalRead(rightlinesensorPin); // read right input value
+          valFrontLeft = digitalRead(frontLeftPin); // read left input value
+          valFrontRight = digitalRead(frontRightPin);
+          
+          leftMotor->run(BACKWARD);
+          leftMotor->setSpeed(straight_speed);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(0);
+          if (valLeft) break;
+        }
         //Serial.println("break");
             leftMotor->run(FORWARD);
           leftMotor->setSpeed(straight_speed);
@@ -1659,11 +1671,10 @@ void get_home(int position)
 }
 void loop()
 {
-//Serial.println("Traversing");
-//traverse_grid();
+Serial.println("Traversing");
+traverse_grid();
 Serial.println("turning right at center");
-// delete this
-drive_till_intersection();
+
 turn_right_at_center();
 Serial.println("going to bocs");
 
