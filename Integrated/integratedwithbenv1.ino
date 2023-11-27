@@ -1060,35 +1060,35 @@ void get_home_Filt(int position)
   }
 }
 
-void go_to_box(int magnetic)
+void go_to_box()
 {
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
- int valRight = digitalRead(rightlinesensorPin); // read right input value
- int valFrontLeft = digitalRead(frontLeftPin); // read left input value
- int valFrontRight = digitalRead(frontRightPin); // read right input value
- int deposit_box = 0;
+  int valRight = digitalRead(rightlinesensorPin); // read right input value
+  int valFrontLeft = digitalRead(frontLeftPin); // read left input value
+  int valFrontRight = digitalRead(frontRightPin); // read right input value
+  int deposit_box = 0;
   while(true)
   {
-  led_flash();
- int valLeft = digitalRead(leftlinesensorPin); // read left input value
- int valRight = digitalRead(rightlinesensorPin); // read right input value
- int valFrontLeft = digitalRead(frontLeftPin); // read left input value
- int valFrontRight = digitalRead(frontRightPin); // read right input value
-  //Serial.println("Front: " << valFrontLeft << "  Back: " << valFrontRight << "  Right: " << valRight << "  Left: " << valLeft);
-  // Start by continuing along the line
+    led_flash();
+    int valLeft = digitalRead(leftlinesensorPin); // read left input value
+    int valRight = digitalRead(rightlinesensorPin); // read right input value
+    int valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    int valFrontRight = digitalRead(frontRightPin); // read right input value
+      //Serial.println("Front: " << valFrontLeft << "  Back: " << valFrontRight << "  Right: " << valRight << "  Left: " << valLeft);
+      // Start by continuing along the line
 
-  StraightLineFilt(valFrontLeft, valFrontRight, valRight , valLeft);
+    StraightLineFilt(valFrontLeft, valFrontRight, valRight , valLeft);
 
   // We now reach the intersection, we either go right or left:
 
-if(!valFrontLeft && !valFrontRight && valRight && valLeft)
-      {
+    if(!valFrontLeft && !valFrontRight && valRight && valLeft)
+    {
         if (magnetic_block)
         {
           // Turn right and head to the red box
           while(true)
           {
-  led_flash();
+            led_flash();
             valLeft = digitalRead(leftlinesensorPin); // read left input value
             valRight = digitalRead(rightlinesensorPin); // read right input value
             valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -1176,29 +1176,29 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
             }
           }
 
-        if(deposit_box == 1)
-        {
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(0);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(0);
-        myservo.write(0);
-        delay(1000);
-        break;
+          if(deposit_box == 1)
+          {
+          leftMotor->run(FORWARD);
+          leftMotor->setSpeed(0);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(0);
+          myservo.write(0);
+          delay(1000);
+          break;
 
-        }
+          }
         // We're now in the box
     
      
-      }
-    }
+        }
+    
   
         if (!magnetic_block)
         {
           // Turn left and head to the green box
           while(true)
           {
-  led_flash();
+            led_flash();
             valLeft = digitalRead(leftlinesensorPin); // read left input value
             valRight = digitalRead(rightlinesensorPin); // read right input value
             valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -1274,22 +1274,23 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
             }
           }
 
-        if(deposit_box == 1)
-        {
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(0);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(0);
-        myservo.write(0);
-        delay(1000);
-        break;
+          if(deposit_box == 1)
+          {
+          leftMotor->run(FORWARD);
+          leftMotor->setSpeed(0);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(0);
+          myservo.write(0);
+          delay(1000);
+          break;
 
-        }
+          }
         // We're now in the box
     
      
-      }
+        }
     }
+  }
   
 
 
