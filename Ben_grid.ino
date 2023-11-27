@@ -1670,6 +1670,7 @@ void get_home(int position)
 }
 void loop()
 {
+
 Serial.println("Traversing");
 traverse_grid();
 Serial.println("turning right at center");
@@ -1677,20 +1678,18 @@ Serial.println("turning right at center");
 turn_right_at_center();
 Serial.println("going to bocs");
 
-  go_to_box(1);//block_magnetic);
+  go_to_box(0);//block_magnetic);
   drive_till_intersection();
-    leftMotor->run(FORWARD);
-    leftMotor->setSpeed(0);
-    rightMotor->run(FORWARD);
-    rightMotor->setSpeed(0);
-  delay(5000);
+
   turn_left_at_center();
-  
-  traverse_grid();
-  turn_right_at_center();
+
   drive_till_intersection();
   pass_over_intersection();
-  go_to_box(1);//block_magnetic);
+  drive_straight_for_a_bit();
+
+  traverse_grid();
+  turn_right_at_center();
+  go_to_box(0);//block_magnetic);
   drive_till_intersection();
     leftMotor->run(FORWARD);
     leftMotor->setSpeed(0);
