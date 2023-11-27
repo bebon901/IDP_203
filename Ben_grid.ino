@@ -966,7 +966,6 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
     
      
       }
-    }
   
         if (!magnetic)
         {
@@ -1065,7 +1064,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
      
       }
     }
-  
+  }
 
 
 // Aligning up!
@@ -1680,5 +1679,22 @@ Serial.println("going to bocs");
 
   go_to_box(1);//block_magnetic);
   drive_till_intersection();
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(0);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(0);
+  delay(5000);
   turn_left_at_center();
+  
+  traverse_grid();
+  turn_right_at_center();
+  drive_till_intersection();
+  pass_over_intersection();
+  go_to_box(1);//block_magnetic);
+  drive_till_intersection();
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(0);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(0);
+  delay(5);
 }
