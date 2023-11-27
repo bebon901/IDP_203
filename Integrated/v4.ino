@@ -364,23 +364,23 @@ void return_after_grab() // being called from small rectangle function
   { 
     read(curr_dir);
     leftMotor->run(FORWARD);
-    leftMotor->setSpeed(150);
+    leftMotor->setSpeed(250);
     rightMotor->run(FORWARD);
-    rightMotor->setSpeed(130);
+    rightMotor->setSpeed(230);
     
     while(curr_dir[2] && !(curr_dir[3])){    
       leftMotor->run(BACKWARD);
-      leftMotor->setSpeed(100);
+      leftMotor->setSpeed(200);
       rightMotor->run(FORWARD);
-      rightMotor->setSpeed(100);
+      rightMotor->setSpeed(200);
       read(curr_dir);
     }
 
     while(curr_dir[3] && !(curr_dir[2])){    
       leftMotor->run(FORWARD);
-      leftMotor->setSpeed(100);
+      leftMotor->setSpeed(200);
       rightMotor->run(BACKWARD);
-      rightMotor->setSpeed(100);
+      rightMotor->setSpeed(200);
       read(curr_dir);
     }
 
@@ -581,13 +581,23 @@ void big_loop_reverse_back_top() // being called from small rectangle function
   //turn right
   if(turn_counter == 0)
   {
-    float time_start_reverse_0 = millis();
-    while(((millis() - time_start_reverse_0) < 500) || !(curr_dir[0] && curr_dir[1]))
+    while(curr_dir[0] || curr_dir[1])
     {
     leftMotor->run(FORWARD);
     leftMotor->setSpeed(200);
-    rightMotor->run(BACKWARD);
+    rightMotor->run(FORWARD);
     rightMotor->setSpeed(200);
+    read(curr_dir);
+
+
+    }
+    
+    while(!(curr_dir[0] && curr_dir[1]))
+    {
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(255);
+    rightMotor->run(BACKWARD);
+    rightMotor->setSpeed(255);
     read(curr_dir);
     }
     turn_counter += 1;
@@ -1040,19 +1050,11 @@ void loop()
     //ans reset step to 0
   }
 
-  // bool var = block_detection();
-  // if(!var)
-  // {
-  //   StraightLine();
-  // }
-  // else
-  // {
-  //   return_after_grab();
-  //   big_loop_reverse_back_bottom();
+
+    // return_after_grab();
+    // big_loop_reverse_back_top();
     
-  // }
-
+ 
 }
-
 
 
