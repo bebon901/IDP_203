@@ -31,8 +31,8 @@ int frontRightPin = 3; // Connect sensor to input pin 3
 int leftlinesensorPin = 5;
 int rightlinesensorPin = 4; // Connect sensor to input pin 3
 
-int green_ledPin = 13;
-int red_ledPin = 12;
+int green_led = 13;
+int red_led = 12;
 int scanning = 0;
 int sensityPin = A0; 
 
@@ -44,8 +44,8 @@ void setup() {
  Serial.begin(9600); // Init the serial port
  Wire.begin();
  pinMode(blue_led, OUTPUT); //Set Pin3 as output
- pinMode(red_ledPin, OUTPUT);
-pinMode(green_ledPin, OUTPUT);
+ pinMode(red_led, OUTPUT);
+pinMode(green_led, OUTPUT);
  pinMode(leftlinesensorPin, INPUT); // declare LED as output
  pinMode(rightlinesensorPin, INPUT); // declare Micro switch as input
  pinMode(frontRightPin, INPUT); // declare LED as output
