@@ -1,0 +1,22 @@
+void turn_right_at_intersection
+{
+  read(curr_dir);
+  while(!(curr_dir[2] && curr_dir[3]))
+  {
+      leftMotor->run(FORWARD);
+      leftMotor->setSpeed(200);
+      rightMotor->run(BACKWARD);
+      rightMotor->setSpeed(200);
+      read(curr_dir);
+  
+  }
+  
+  float time_start4 = millis();
+  while(millis() - time_start4 < 1000)
+  {
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(200);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(180);
+  }
+}

@@ -1,0 +1,34 @@
+int blue_led = 8; //change this
+unsigned long previousMillis = 0;
+int ledState = LOW;
+
+void setup()
+{
+ pinMode(blue_led, OUTPUT); //Set Pin3 as output
+}
+void loop()
+{
+  led_flash();
+}
+
+
+
+void led_flash(){
+
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= 250) { //flashes at 2 Hz
+    // last time LED blinked
+    previousMillis = currentMillis;
+
+    // if the LED is off turn it on and vice-versa:
+    if (ledState == LOW) {
+      ledState = HIGH;
+    } else {
+      ledState = LOW;
+    }
+
+    // set the LED with the ledState of the variable:
+    digitalWrite(blue_led, ledState);
+
+  }
+}

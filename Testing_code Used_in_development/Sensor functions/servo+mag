@@ -1,0 +1,64 @@
+#include <Servo.h>
+Servo myservo; // create servo object to control a servo
+// twelve servo objects can be created on most boards
+int pos = 0; // variable to store the servo position
+int servo_pin = 9;
+int green_ledPin = 13;
+int red_ledPin = 12;
+int magnetPin = 6; //change these 3 values according to connections
+bool block_found = true; //variable can be used for determining
+                                //where to bring the block
+bool block_is_delivered = false; //this could be used differently,
+                                 //only here for example code
+
+
+void magnetic() { //detects magnetism and turns the red
+                  //or green LED on accordingly, which then stays on 
+                  //until turned off with another function
+  int val = 0;
+  val = digitalRead(magnetPin);
+  if (val == HIGH) {
+  digitalWrite(red_ledPin, HIGH);
+  //return true;
+} else {
+  digitalWrite(green_ledPin, HIGH);
+  //return false;
+}
+}
+void magnetic_stuff_reset() { //turns green and red LEDs off and turns boolean to false
+  block_found = true;
+  digitalWrite(red_ledPin, LOW);
+  digitalWrite(green_ledPin, LOW);
+  return false;
+}
+
+void setup() {
+ myservo.attach(servo_pin); // attaches the servo on pin 9 to the servo object
+ pinMode(red_ledPin, OUTPUT);
+ pinMode(green_ledPin, OUTPUT);
+ pinMode(magnetPin, INPUT);
+ 
+}
+void loop() {
+  myservo.write(0);
+  delay(1500);
+  myservo.write(110);
+  delay(1500);
+  if (block_found == true){
+  block_found = false;
+  //bool is_magnetic = 
+  magnetic();
+  // if (is_magnetic == true){
+  //   //return to red - maybe have a variable which keeps whether red or green
+  //   Serial.println("magnetic found");
+  // }
+  // else{
+  //   Serial.println("not magnetic");
+  //   //return to green
+  }
+
+ if (block_is_delivered){
+  magnetic_stuff_reset();
+ }
+  }
+

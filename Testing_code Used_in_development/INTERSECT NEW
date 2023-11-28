@@ -1,0 +1,46 @@
+void turn_left_at_intersection_Filt()
+{
+ int valLeft = digitalRead(leftlinesensorPin); // read left input value
+  int valRight = digitalRead(rightlinesensorPin); // read right input value
+  int valFrontLeft = digitalRead(frontLeftPin); // read left input value
+  int valFrontRight = digitalRead(frontRightPin); // read right input value
+  while(true)
+  {
+    led_flash();
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+
+    leftMotor->run(BACKWARD);
+    leftMotor->setSpeed(left_turn_speed);
+    rightMotor->run(FORWARD);
+    rightMotor->setSpeed(right_turn_speed);
+    //Serial.println("turning");
+
+      if(valRight)
+      {
+        while (true)
+        {
+          valLeft = digitalRead(leftlinesensorPin); // read left input value
+          valRight = digitalRead(rightlinesensorPin); // read right input value
+          valFrontLeft = digitalRead(frontLeftPin); // read left input value
+          valFrontRight = digitalRead(frontRightPin);
+          
+          leftMotor->run(BACKWARD);
+          leftMotor->setSpeed(straight_speed);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(0);
+          if (valLeft) break;
+        }
+        //Serial.println("break");
+            leftMotor->run(FORWARD);
+          leftMotor->setSpeed(straight_speed);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(straight_speed);
+        break;
+      }
+      
+  }
+  drive_straight_for_a_bit_Filt();
+}
