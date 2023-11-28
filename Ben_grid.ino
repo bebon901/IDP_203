@@ -220,17 +220,40 @@ void turn_right_at_intersection()
     rightMotor->setSpeed(right_turn_speed);
     //Serial.println("turning");
 
-      if(valLeft)
+      if(!valFrontRight && !valFrontLeft)
       {
         //Serial.println("break");
-            leftMotor->run(FORWARD);
-          leftMotor->setSpeed(straight_speed);
-          rightMotor->run(FORWARD);
-          rightMotor->setSpeed(straight_speed);
+
         break;
       }
       
   }
+  while(true)
+  {
+    led_flash();
+    valLeft = digitalRead(leftlinesensorPin); // read left input value
+    valRight = digitalRead(rightlinesensorPin); // read right input value
+    valFrontLeft = digitalRead(frontLeftPin); // read left input value
+    valFrontRight = digitalRead(frontRightPin);
+
+    leftMotor->run(FORWARD);
+    leftMotor->setSpeed(left_turn_speed);
+    rightMotor->run(BACKWARD);
+    rightMotor->setSpeed(right_turn_speed);
+    //Serial.println("turning");
+
+      if(valFrontRight && valFrontLeft)
+      {
+        //Serial.println("break");
+
+        break;
+      }
+      
+  }
+    leftMotor->run(FORWARD);
+leftMotor->setSpeed(straight_speed);
+rightMotor->run(FORWARD);
+rightMotor->setSpeed(straight_speed);
   drive_straight_for_a_bit();
 }
 
@@ -1231,7 +1254,10 @@ while (true)
       leftMotor->setSpeed(0);
       rightMotor->run(BACKWARD);
       rightMotor->setSpeed(0);
+      // Turn on the blue LED
+      digitalWrite(blue_led, HIGH);
       delay(5000);
+      digitalWrite(blue_led, LOW);
       // Waiting in the box here
 // drive forward for a bit
 while (true)
@@ -1335,6 +1361,7 @@ void traverse_grid()
         valFrontLeft = digitalRead(frontLeftPin); // read left input value
         valFrontRight = digitalRead(frontRightPin); // read right input value
         int x = check_for_block();
+        magnetic();
         //Serial.println(x);
         if (x)
         {
@@ -1344,6 +1371,21 @@ void traverse_grid()
           rightMotor->setSpeed(0);
           Serial.println("Grabbing Block");
           myservo.write(160);
+          if (magnetic)
+          {
+            // Turn on the Red LED!
+            digitalWrite(red_led, HIGH);
+          }
+          else
+          {
+            // Turn on the green LED
+            digitalWrite(green_led, HIGH);
+          }
+          // Wait for 5 seconds
+          delay(5000);
+          
+          digitalWrite(green_led, LOW);
+          digitalWrite(green_led, LOW);
           Serial.println(position);
           delay(1000);
           turn_180();
