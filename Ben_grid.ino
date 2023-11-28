@@ -1371,7 +1371,7 @@ void traverse_grid()
           rightMotor->setSpeed(0);
           Serial.println("Grabbing Block");
           myservo.write(160);
-          if (magnetic)
+          if (block_magnetic)
           {
             // Turn on the Red LED!
             digitalWrite(red_led, HIGH);
@@ -1385,7 +1385,7 @@ void traverse_grid()
           delay(5000);
           
           digitalWrite(green_led, LOW);
-          digitalWrite(green_led, LOW);
+          digitalWrite(red_led, LOW);
           Serial.println(position);
           delay(1000);
           turn_180();
@@ -1793,7 +1793,7 @@ Serial.println("going to bocs");
   drive_till_intersection();
 
   turn_left_at_center();
-
+  block_magnetic = 0;
   drive_till_intersection();
   pass_over_intersection();
   drive_straight_for_a_bit();
