@@ -777,6 +777,7 @@ void scan_using_dist()
 
 void go_to_box(int magnetic)
 {
+  magnetic = !magnetic;
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
  int valRight = digitalRead(rightlinesensorPin); // read right input value
  int valFrontLeft = digitalRead(frontLeftPin); // read left input value
@@ -1678,7 +1679,7 @@ Serial.println("turning right at center");
 turn_right_at_center();
 Serial.println("going to bocs");
 
-  go_to_box(0);//block_magnetic);
+  go_to_box(block_magnetic);
   drive_till_intersection();
 
   turn_left_at_center();
@@ -1689,7 +1690,7 @@ Serial.println("going to bocs");
 
   traverse_grid();
   turn_right_at_center();
-  go_to_box(0);//block_magnetic);
+  go_to_box(block_magnetic);
   drive_till_intersection();
     leftMotor->run(FORWARD);
     leftMotor->setSpeed(0);
