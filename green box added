@@ -1,0 +1,161 @@
+if (block_magnetic)
+        {
+          // Turn left and head to the green box
+          while(true)
+          {
+            led_flash();
+            valLeft = digitalRead(leftlinesensorPin); // read left input value
+            valRight = digitalRead(rightlinesensorPin); // read right input value
+            valFrontLeft = digitalRead(frontLeftPin); // read left input value
+            valFrontRight = digitalRead(frontRightPin);
+
+            leftMotor->run(BACKWARD);
+            leftMotor->setSpeed(255);
+            rightMotor->run(FORWARD);
+            rightMotor->setSpeed(255);
+            //Serial.println("turning");
+
+              if(valFrontLeft && valFrontRight)
+              {
+                Serial.println("break");
+                break;
+              }
+              
+          }
+          // Now facing the correct direction.
+          // Follow this line for a while, until it finishes
+//          float time_0 = millis();
+//          while (millis() - time_0 < 800)
+//          {
+//            valLeft = digitalRead(leftlinesensorPin); // read left input value
+//            valRight = digitalRead(rightlinesensorPin); // read right input value
+//            valFrontLeft = digitalRead(frontLeftPin); // read left input value
+//            valFrontRight = digitalRead(frontRightPin); // read right input value
+//            StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+//          }
+
+          while(true)
+          {
+            valLeft = digitalRead(leftlinesensorPin); // read left input value
+            valRight = digitalRead(rightlinesensorPin); // read right input value
+            valFrontLeft = digitalRead(frontLeftPin); // read left input value
+            valFrontRight = digitalRead(frontRightPin);
+            StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+            if(!valFrontLeft && valRight && !valFrontRight)
+            {
+              break;
+            }
+
+
+          }
+          delay(800);
+
+          while(true)
+          {
+            valLeft = digitalRead(leftlinesensorPin); // read left input value
+            valRight = digitalRead(rightlinesensorPin); // read right input value
+            valFrontLeft = digitalRead(frontLeftPin); // read left input value
+            valFrontRight = digitalRead(frontRightPin);
+            leftMotor->run(FORWARD);
+            leftMotor->setSpeed(150);
+            rightMotor->run(BACKWARD);
+            rightMotor->setSpeed(150);
+            if(valFrontLeft && valFrontRight)
+            {
+              break;
+            }
+
+
+          }
+
+          float time_5 = millis();
+          while (millis() - time_5 < 150)
+          {
+            valLeft = digitalRead(leftlinesensorPin); // read left input value
+            valRight = digitalRead(rightlinesensorPin); // read right input value
+            valFrontLeft = digitalRead(frontLeftPin); // read left input value
+            valFrontRight = digitalRead(frontRightPin); // read right input value
+            StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
+          }
+          
+          delay(800);
+          leftMotor->run(BACKWARD);
+          leftMotor->setSpeed(150);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(150);
+//          delay(300);
+//          leftMotor->run(FORWARD);
+//          leftMotor->setSpeed(255);
+//          rightMotor->run(FORWARD);
+//          rightMotor->setSpeed(230);
+
+          while(true)
+          {
+            valLeft = digitalRead(leftlinesensorPin); // read left input value
+            valRight = digitalRead(rightlinesensorPin); // read right input value
+            valFrontLeft = digitalRead(frontLeftPin); // read left input value
+            valFrontRight = digitalRead(frontRightPin);
+
+            Serial.println("Turning");
+            if (valRight)
+            {
+              leftMotor->run(BACKWARD);
+              leftMotor->setSpeed(250);
+              rightMotor->run(FORWARD);
+              rightMotor->setSpeed(50);
+              Serial.println("Right");
+            }
+            if (valLeft)
+            {
+              leftMotor->run(BACKWARD);
+              leftMotor->setSpeed(50);
+              rightMotor->run(FORWARD);
+              rightMotor->setSpeed(250);
+              Serial.println("Left");
+            }
+            if (valLeft && valRight)
+            {
+              Serial.println("Stopped!");
+              delay(100);
+              break;
+            }
+            delay(50);
+
+          }
+
+          leftMotor->run(FORWARD);
+          leftMotor->setSpeed(255);
+          rightMotor->run(FORWARD);
+          rightMotor->setSpeed(220);
+          delay(1500);
+
+          while(true)
+          {
+            led_flash();
+            // Wait for the front line sensors to detect again
+            valLeft = digitalRead(leftlinesensorPin); // read left input value
+            valRight = digitalRead(rightlinesensorPin); // read right input value
+            valFrontLeft = digitalRead(frontLeftPin); // read left input value
+            valFrontRight = digitalRead(frontRightPin);
+
+            if(valFrontLeft && valFrontRight)
+            {
+              Serial.println("break");
+              deposit_box = 1;
+              break;
+              
+            }
+          }
+
+        if(deposit_box == 1)
+        {
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(0);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(0);
+        myservo.write(0);
+        delay(1000);
+        break;
+
+        }
+        // We're now in the box
