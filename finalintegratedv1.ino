@@ -1334,7 +1334,6 @@ void traverse_grid()
           turn_180();
           Serial.println("Druve Straignt");
           drive_straight_for_a_short_bit();
-          delay(1000);
           get_home(position + 1);
           
           leftMotor->run(FORWARD);
