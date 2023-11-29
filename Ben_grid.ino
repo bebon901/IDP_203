@@ -1658,7 +1658,7 @@ Serial.println("turning right at center");
 turn_right_at_center();
 Serial.println("going to bocs");
 
-  go_to_box(block_magnetic);
+  go_to_box(1);
   drive_till_intersection();
 
   turn_left_at_center();
@@ -1669,7 +1669,7 @@ Serial.println("going to bocs");
 
   traverse_grid();
   turn_right_at_center();
-  go_to_box(block_magnetic);
+  go_to_box(1);
   drive_till_intersection();
     leftMotor->run(FORWARD);
     leftMotor->setSpeed(0);
