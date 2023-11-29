@@ -20,7 +20,7 @@ int green_ledPin = 13;
 int red_ledPin = 12;
 int magneticPin = 6;
 int magnetic_block = 0; // you need to change magnetic_block in bens code
-int blue_led = 13;
+int blue_led = 11;
 
 
 Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
@@ -83,10 +83,21 @@ void magnetic()
   
   magnetic_block = digitalRead(magneticPin);
   if (magnetic_block == HIGH) digitalWrite(red_ledPin, HIGH);  
-  else digitalWrite(green_ledPin, HIGH);  
+  //else digitalWrite(green_ledPin, HIGH);  
   
 }
 
+void magnetic_Charu() 
+{ 
+  //detects magnetism and turns the red
+  //or green LED on accordingly, which then stays on 
+  //until turned off with another function
+  
+  magnetic_block = digitalRead(magneticPin);
+  if (magnetic_block == HIGH) digitalWrite(red_ledPin, HIGH);  
+  else digitalWrite(green_ledPin, HIGH);  
+  
+}
 
 void setup()
 {
@@ -115,7 +126,7 @@ void setup()
  
   // Attach the servoMotos and magnetic LEDs
   myservo.attach(servo_pin); // attaches the servo on pin 9 to the servo object
-  myservo.write(145);        // close it initially
+  myservo.write(0);        // close it initially
   pinMode(red_ledPin, OUTPUT);
   pinMode(green_ledPin, OUTPUT);
   pinMode(magneticPin, INPUT);
@@ -1284,7 +1295,7 @@ void traverse_grid()
         magnetic();
         //Serial.println(x);
         if (x)
-        {
+      {
           leftMotor->run(FORWARD);
           leftMotor->setSpeed(0);
           rightMotor->run(FORWARD);
@@ -1931,7 +1942,6 @@ void small_rectangle()
       {
         led_flash();
         StraightLineCharu();
-        delay(200);
       }
      
       
@@ -2060,7 +2070,6 @@ void big_loop_reverse_back_bottom() // being called from small rectangle functio
       {
         led_flash();
         StraightLineCharu();
-        delay(200);
       }
       
     }
@@ -2516,7 +2525,14 @@ bool block_detection()
       // }
   
       myservo.write(160);
-      magnetic();
+      magnetic_Charu();
+         leftMotor->run(FORWARD);
+           leftMotor->setSpeed(0);
+           rightMotor->run(FORWARD);
+           rightMotor->setSpeed(0);
+           delay(5000);
+      
+      
 
       
           
