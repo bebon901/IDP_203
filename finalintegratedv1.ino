@@ -1931,6 +1931,7 @@ void small_rectangle()
       {
         led_flash();
         StraightLineCharu();
+        delay(200);
       }
      
       
@@ -2059,6 +2060,7 @@ void big_loop_reverse_back_bottom() // being called from small rectangle functio
       {
         led_flash();
         StraightLineCharu();
+        delay(200);
       }
       
     }
