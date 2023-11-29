@@ -1,3 +1,12 @@
+/*
+THIS IS THE FINAL ROBOT CODE, CREATED BY MERGING THE FREE SPACE BLOCK AND THE GRID
+BLOCK DETECTION CODE.
+Merges from ben_grid.ino and v2inworking.ino to create the final peice of software.
+These were worked upon separately until the end of the project, where we merged and tested together.
+The robot will relatively reliably get both grid blocks and a few free space if lucky. 
+However, the code to get from the start box to the colored box is proving unreliable.
+*/
+
 // All the libraries
 #include <Adafruit_MotorShield.h>
 #include "Arduino.h"
@@ -14,6 +23,7 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 DFRobot_VL53L0X sensor;
 Servo myservo;
 
+// Define some useful pin numbers
 int step = 0;
 int servo_pin = 9;
 int green_ledPin = 13;
@@ -48,6 +58,7 @@ int right_turn_speed = 150;
 unsigned long previousMillis = 0;
 int BlueLedState = LOW;
 
+// Function to periodically flash the LED, called whenever robot is moving
 void led_flash()
 {
   unsigned long currentMillis = millis();
@@ -75,6 +86,7 @@ void magnetic_stuff_reset()
 
 }
 
+// Called continuously as we approach a box and sets a global variable to HIGH if any magnetism sensed
 void magnetic()
 {
   if (digitalRead(magneticPin) == HIGH)
@@ -83,6 +95,7 @@ void magnetic()
   }
 }
 
+// Charu's version of the magentic sensor function.
 void magnetic_Charu() 
 { 
   //detects magnetism and turns the red
@@ -132,11 +145,13 @@ void setup()
   leftMotor->run(RELEASE);
   rightMotor->run(RELEASE);
 
+  // Navigate the robot out of the start position
   start_to_grid();
 
 
 }
 
+// Code that uses the front line sensors to drive in a straight line
 void StraightLine(int valFrontLeft, int valFrontRight, int valRight, int valLeft){
   
   magnetic();
@@ -168,6 +183,7 @@ void StraightLine(int valFrontLeft, int valFrontRight, int valRight, int valLeft
 
 }
 
+// Code to perform a right turn
 void turn_right()
 {
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -187,7 +203,7 @@ void turn_right()
     rightMotor->run(BACKWARD);
     rightMotor->setSpeed(right_turn_speed);
     //Serial.println("turning");
-
+      // wait for the front two sensors to redetect, means we are lined up.
       if(valFrontLeft && valFrontRight)
       {
         //Serial.println("break");
@@ -234,6 +250,7 @@ void turn_left()
   drive_straight_for_a_bit();
 }
 
+// Similar to above code, but with more cases since the front two sensors start HIGH when an intersection is detected
 void turn_right_at_intersection()
 {
  leftMotor->run(FORWARD);
@@ -274,7 +291,7 @@ void turn_right_at_intersection()
 }
 
 
-
+// Function to line follow for a second, very useful throughout the code.
 void drive_straight_for_a_bit()
 {
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -292,63 +309,8 @@ void drive_straight_for_a_bit()
     delay(10);
   }
 }
-// void turn_left_at_center()
-// {
-//   led_flash();
-//   Serial.println("Turning left at center");
-//   int valLeft = digitalRead(leftlinesensorPin); // read left input value
-//   int valRight = digitalRead(rightlinesensorPin); // read right input value
-//   int valFrontLeft = digitalRead(frontLeftPin); // read left input value
-//   int valFrontRight = digitalRead(frontRightPin); // read right input value
-//   leftMotor->run(BACKWARD);
-//   leftMotor->setSpeed(left_turn_speed);
-//   rightMotor->run(FORWARD);
-//   rightMotor->setSpeed(right_turn_speed);
-//   delay(250);
-//   while(true)
-//   {
-//   led_flash();
-//     valLeft = digitalRead(leftlinesensorPin); // read left input value
-//     valRight = digitalRead(rightlinesensorPin); // read right input value
-//     valFrontLeft = digitalRead(frontLeftPin); // read left input value
-//     valFrontRight = digitalRead(frontRightPin);
 
-//     leftMotor->run(BACKWARD);
-//     leftMotor->setSpeed(left_turn_speed);
-//     rightMotor->run(FORWARD);
-//     rightMotor->setSpeed(right_turn_speed);
-//     //Serial.println(valRight);
-//     //Serial.println("turning");
-//     if(!valRight)
-//       {
-//         Serial.println("break");
-//         break;
-//       }
-//   }
-//   delay(150);
-//   while (true)
-//   {
-//   led_flash();
-//     valLeft = digitalRead(leftlinesensorPin); // read left input value
-//     valRight = digitalRead(rightlinesensorPin); // read right input value
-//     valFrontLeft = digitalRead(frontLeftPin); // read left input value
-//     valFrontRight = digitalRead(frontRightPin);
-//     //Serial.println(valRight);
-//       if(valFrontLeft && valFrontRight)
-//       {
-//         //Serial.println("break");
-//         Serial.println("break2");
-//             leftMotor->run(FORWARD);
-//           leftMotor->setSpeed(100);
-//           rightMotor->run(FORWARD);
-//           rightMotor->setSpeed(100);
-//         break;
-//       }
-      
-//   }
-//   drive_straight_for_a_bit();
-
-// }
+// Read the sensors and return to an array
 void read(int read_array[])
 {
     read_array[2] = digitalRead(leftlinesensorPin); // read left input value
@@ -358,6 +320,7 @@ void read(int read_array[])
     
 }
 
+// Function to turn right at the center of grid. Actually the same as turn_right_at_intersection() in the end.
 void turn_right_at_center()
 {
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -419,76 +382,7 @@ void turn_right_at_center()
       } 
     }
   }
-/*
-{
-  led_flash();
-  Serial.println("Started");
-  int valLeft = digitalRead(leftlinesensorPin); // read left input value
-  int valRight = digitalRead(rightlinesensorPin); // read right input value
-  int valFrontLeft = digitalRead(frontLeftPin); // read left input value
-  int valFrontRight = digitalRead(frontRightPin); // read right input value
 
-  float time_stamp = millis();
-  
-  while((millis() - time_stamp < 1000) )
-  {
-    led_flash();      
-    int valLeft = digitalRead(leftlinesensorPin); // read left input value
-    int valRight = digitalRead(rightlinesensorPin); // read right input value
-    int valFrontLeft = digitalRead(frontLeftPin); // read left input value
-    int valFrontRight = digitalRead(frontRightPin); // read right input value
-    leftMotor->run(FORWARD);
-    leftMotor->setSpeed(200);
-    rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(200);
-  }
-
-  Serial.println(" first");
-  valLeft = digitalRead(leftlinesensorPin); // read left input value
-  valRight = digitalRead(rightlinesensorPin); // read right input value
-  valFrontLeft = digitalRead(frontLeftPin); // read left input value
-  valFrontRight = digitalRead(frontRightPin); // read right input value
-  while((!valLeft && !valRight))
-  {
-    valLeft = digitalRead(leftlinesensorPin); // read left input value
-    valRight = digitalRead(rightlinesensorPin); // read right input value
-    valFrontLeft = digitalRead(frontLeftPin); // read left input value
-    valFrontRight = digitalRead(frontRightPin); // read right input value
-  }
-    leftMotor->run(FORWARD);
-    leftMotor->setSpeed(0);
-    rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(0);
-
-  delay(100000);
-  while (true)
-  {
-    if (valRight && !valLeft)
-    {
-      leftMotor->run(FORWARD);
-      leftMotor->setSpeed(left_turn_speed);
-      rightMotor->run(BACKWARD);
-      rightMotor->setSpeed(right_turn_speed);
-    }
-    if (valLeft && !valRight)
-    {
-      leftMotor->run(BACKWARD);
-      leftMotor->setSpeed(left_turn_speed);
-      rightMotor->run(FORWARD);
-      rightMotor->setSpeed(right_turn_speed);
-    }
-    if (valLeft && valRight)
-    {
-      break;
-    }
-  }
-  Serial.println("Drive Straight");
-  drive_straight_for_a_bit();
-
-
-}
-
-*/
 void turn_left_at_center()
 {
   led_flash();
@@ -566,6 +460,7 @@ void turn_left_at_center()
   drive_straight_for_a_bit();
 }
 
+// Charu's version of drive_straight_for_a_bit.
 void drive_straight_for_a_bit_2()
 {
   float time =  millis();
@@ -582,65 +477,10 @@ void drive_straight_for_a_bit_2()
   }
 
 }
-// void turn_right_at_center()
-// {
-//   led_flash();
-//   Serial.println("Turning right at center");
-//   int valLeft = digitalRead(leftlinesensorPin); // read left input value
-//   int valRight = digitalRead(rightlinesensorPin); // read right input value
-//   int valFrontLeft = digitalRead(frontLeftPin); // read left input value
-//   int valFrontRight = digitalRead(frontRightPin); // read right input value
-//   leftMotor->run(FORWARD);
-//   leftMotor->setSpeed(left_turn_speed);
-//   rightMotor->run(BACKWARD);
-//   rightMotor->setSpeed(right_turn_speed);
-//   delay(250);
-//   while(true)
-//   {
-//   led_flash();
-//     valLeft = digitalRead(leftlinesensorPin); // read left input value
-//     valRight = digitalRead(rightlinesensorPin); // read right inpuFbrt value
-//     valFrontLeft = digitalRead(frontLeftPin); // read left input value
-//     valFrontRight = digitalRead(frontRightPin);
 
-//     leftMotor->run(FORWARD);
-//     leftMotor->setSpeed(left_turn_speed);
-//     rightMotor->run(BACKWARD);
-//     rightMotor->setSpeed(right_turn_speed);
-//     //Serial.println(valRight);
-//     //Serial.println("turning");
-//     if(!valRight)
-//       {
-//         Serial.println("break");
-//         break;
-//       }
-//   }
-//   delay(150);
+// Code to turn 180 degrees on the spot.
+// Will turn, align up the side 2 sensors, and then continue turning to attempt to turn on the spot.
 
-//   while (true)
-//   {
-//   led_flash();
-//     valLeft = digitalRead(leftlinesensorPin); // read left input value
-//     valRight = digitalRead(rightlinesensorPin); // read right input value
-//     valFrontLeft = digitalRead(frontLeftPin); // read left input value
-//     valFrontRight = digitalRead(frontRightPin);
-//     //Serial.println(valRight);
-//       if(valFrontLeft && valFrontRight)
-//       {
-//         //Serial.println("break");
-//         Serial.println("break2");
-//         leftMotor->run(FORWARD);
-//         leftMotor->setSpeed(100);
-//         rightMotor->run(FORWARD);
-//         rightMotor->setSpeed(100);
-//         break;
-//       }
-      
-//   }
-//   drive_straight_for_a_bit();
-
-// }
-  
 void turn_180()
 {
 
@@ -810,6 +650,7 @@ void scan_using_dist()
   }
 }
 
+// Goes from the line out of the start box and navigates through to a colored box, dependent on the global variable, block_magnetic
 void go_to_box()
 {
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -859,15 +700,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
           }
           // Now facing the correct direction.
           // Follow this line for a while, until it finishes
-//          float time_0 = millis();
-//          while (millis() - time_0 < 1600)
-//          {
-//            valLeft = digitalRead(leftlinesensorPin); // read left input value
-//            valRight = digitalRead(rightlinesensorPin); // read right input value
-//            valFrontLeft = digitalRead(frontLeftPin); // read left input value
-//            valFrontRight = digitalRead(frontRightPin); // read right input value
-//            StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
-//          }
+  
           while(true)
           {
             valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -883,7 +716,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
 
           }
           delay(800);
-
+          // Turn to go down the side of the start box
           while(true)
           {
             valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -898,10 +731,8 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
             {
               break;
             }
-
-
           }
-
+          // drive straight for a short while (align up)
           float time_5 = millis();
           while (millis() - time_5 < 150)
           {
@@ -911,21 +742,13 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
             valFrontRight = digitalRead(frontRightPin); // read right input value
             StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
           }
-//          leftMotor->run(BACKWARD);
-//          leftMotor->setSpeed(150);
-//          rightMotor->run(FORWARD);
-//          rightMotor->setSpeed(150);
-//          delay(300);
-//          leftMotor->run(FORWARD);
-//          leftMotor->setSpeed(255);
-//          rightMotor->run(FORWARD);
-//          rightMotor->setSpeed(230);
+  
           delay(500);
-          Serial.println("Hello!!");
-                    leftMotor->run(FORWARD);
+          leftMotor->run(FORWARD);
           leftMotor->setSpeed(150);
           rightMotor->run(BACKWARD);
           rightMotor->setSpeed(150);
+          // Code to turn, and align up with the red box
           while(true)
           {
             valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -961,7 +784,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
           }
 
           
-
+          // Now drive forward until the front 2 detect again.
           leftMotor->run(FORWARD);
           leftMotor->setSpeed(255);
           rightMotor->run(FORWARD);
@@ -1001,7 +824,7 @@ if(!valFrontLeft && !valFrontRight && valRight && valLeft)
     
      
       }
-  
+      // Same as block above just with different directions
         if (!magnetic_block)
         {
 
@@ -1283,7 +1106,7 @@ while (true)
   drive_straight_for_a_bit();
 }
 
-
+// Code to navigate the grid. Goes round in a loop until a block is detected
 void traverse_grid()
 {
   int position = 1;
@@ -1306,8 +1129,10 @@ void traverse_grid()
         int x = check_for_block();
         magnetic();
         //Serial.println(x);
+        // If found a block:
         if (x)
       {
+        // Stop
           leftMotor->run(FORWARD);
           leftMotor->setSpeed(0);
           rightMotor->run(FORWARD);
@@ -1332,7 +1157,7 @@ void traverse_grid()
           Serial.println(position);
           delay(1000);
           turn_180();
-          Serial.println("Druve Straignt");
+          Serial.println("Drive Straignt");
           drive_straight_for_a_short_bit();
           get_home(position + 1);
           
@@ -1341,11 +1166,13 @@ void traverse_grid()
           rightMotor->run(FORWARD);
           rightMotor->setSpeed(0);
           found_block = 1;
+        // Break exits the code above, and then goes into a return to home fn.
           break;
           // /delay(10000);
 
         }
         // Reached first right
+        // Use cases for each of the positions in the grid.
         if(valRight)
         {
           Serial.println("Saw a right!!");
@@ -1456,6 +1283,7 @@ void traverse_grid()
     delay(1000);
 }
 
+// Does what it says on the tin.
 void drive_till_intersection()
 {    int valLeft = digitalRead(leftlinesensorPin); // read left input value
     int valRight = digitalRead(rightlinesensorPin); // read right input value
@@ -1479,6 +1307,7 @@ void drive_till_intersection()
   }
 }
 
+// Drives over the intersection. Useful for ignoring intersections along the grid.
 void pass_over_intersection()
 {   
   int valLeft = digitalRead(leftlinesensorPin); // read left input value
@@ -1521,62 +1350,7 @@ int check_for_block()
     return 0;
   }
 }
-void reverse_to_position_1()
-{
-  int valLeft = digitalRead(leftlinesensorPin); // read left input value
-  int valRight = digitalRead(rightlinesensorPin); // read right input value
-  int valFrontLeft = digitalRead(frontLeftPin); // read left input value
-  int valFrontRight = digitalRead(frontRightPin); // read right input value
-  while(true)
-  {
-  led_flash();
-    valLeft = digitalRead(leftlinesensorPin); // read left input value
-    valRight = digitalRead(rightlinesensorPin); // read right input value
-    valFrontLeft = digitalRead(frontLeftPin); // read left input value
-    valFrontRight = digitalRead(frontRightPin); // read right input value
-    leftMotor->run(FORWARD);
-    leftMotor->setSpeed(straight_speed);
-    rightMotor->run(FORWARD);
-    rightMotor->setSpeed(straight_speed);
-    if (valLeft)
-    {
-      break;
-    }
-  }
-  // we are over the start box now
-  // turn right till aligned
-  while (true)
-  { 
-  led_flash();
-    valLeft = digitalRead(leftlinesensorPin); // read left input value
-    valRight = digitalRead(rightlinesensorPin); // read right input value
-    valFrontLeft = digitalRead(frontLeftPin); // read left input value
-    valFrontRight = digitalRead(frontRightPin); // read right input value
-    leftMotor->run(FORWARD);
-    leftMotor->setSpeed(straight_speed);
-    rightMotor->run(BACKWARD);
-    rightMotor->setSpeed(straight_speed);
-    if (valFrontLeft && valFrontRight)
-    {
-      break;
-    }
-  }
-  while (true)
-  {
-  led_flash();
-    valLeft = digitalRead(leftlinesensorPin); // read left input value
-    valRight = digitalRead(rightlinesensorPin); // read right input value
-    valFrontLeft = digitalRead(frontLeftPin); // read left input value
-    valFrontRight = digitalRead(frontRightPin); // read right input value
-    StraightLine(valFrontLeft, valFrontRight, valRight, valLeft);
-    if (valRight)
-    {
-      turn_right();
-      break;
-      // Finish this 
-    }
-  }
-}
+// How to drive up to the grid position from the start box.
 void start_to_grid()
 {
   leftMotor->run(FORWARD);
@@ -1608,6 +1382,7 @@ void start_to_grid()
   }
 }
 
+// Very nice (if I say so myself) recursive function that goes from one position to the next, then calls itself again until it reaches the home position.
 void get_home(int position)
 {
   
@@ -1798,6 +1573,7 @@ void Start_from_origin()
 
 }
 
+// Navigating the area where there are free space blocks
 void small_rectangle()
 {
 
@@ -1972,6 +1748,7 @@ void small_rectangle()
 
 }
 
+// To get home once free space blocks are grabbed
 void return_after_grab() // being called from small rectangle function 
 {
   int curr_dir[4] = {0,0,0,0};
@@ -2433,7 +2210,7 @@ void big_loop_reverse_back_top() // being called from small rectangle function
   }
 }
 
-
+// How to detect blocks during free space navigation
 bool block_detection()
 {
     float sensity_t = analogRead(sensityPin);
@@ -2563,7 +2340,7 @@ bool block_detection()
 
 
 
-
+// Finally, the code that runs
 void loop()
 {
 
@@ -2593,31 +2370,12 @@ Serial.println("going to bocs");
     rightMotor->run(FORWARD);
     rightMotor->setSpeed(0);
   delay(5);
-
+// Now do free space navigation
   for(int i = 0; i < 2; i++)
   { 
     step = 0;
     if(step == 0)  
   {  
-    //int curr_dir[4] = {0,0,0,0};
-    // while(true)
-    // {
-    //   leftMotor->run(FORWARD);
-    //   leftMotor->setSpeed(220);
-    //   rightMotor->run(FORWARD);
-    //   rightMotor->setSpeed(220);
-    //   read(curr_dir);
-    //   if(curr_dir[2] && curr_dir[3])
-    //   {
-    //     break;
-    //   }
-    // }
-
-    //  float time_8 = millis();
-    //  while(millis() - time_8 < 800)
-    //  {
-    //   StraightLineCharu();
-    //  }
 
   
 
